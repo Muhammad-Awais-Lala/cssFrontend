@@ -36,4 +36,42 @@ const CustomLabel = React.forwardRef<HTMLLabelElement, CustomLabelProps>(
 );
 CustomLabel.displayName = "CustomLabel";
 
-export { CustomInput, CustomLabel };
+interface CustomTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
+const CustomTextarea = React.forwardRef<HTMLTextAreaElement, CustomTextareaProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <textarea
+        className={cn(
+          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+CustomTextarea.displayName = "CustomTextarea";
+
+interface CustomSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {}
+
+const CustomSelect = React.forwardRef<HTMLSelectElement, CustomSelectProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <select
+        className={cn(
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500",
+          className
+        )}
+        ref={ref}
+        {...props}
+      >
+        {children}
+      </select>
+    );
+  }
+);
+CustomSelect.displayName = "CustomSelect";
+
+export { CustomInput, CustomLabel, CustomTextarea, CustomSelect };
