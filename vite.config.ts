@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve('./src'),   // bas itna likho
+      '@': path.resolve(__dirname, './src'),
     },
   },
 })
