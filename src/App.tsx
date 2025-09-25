@@ -10,7 +10,7 @@ import Sessions from './pages/Sessions';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import CustomToastProvider from './components/CustomToastProvider';
-import Footer from './components/Footer'; // New import
+import Footer from './components/Footer';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +26,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Router>
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300 flex flex-col">
+          <div className="min-h-screen bg-red-500 dark:bg-red-900 transition-colors duration-300 flex flex-col"> {/* Added bg-red-500 for testing */}
             <Navigation />
             <main className="flex-grow pt-16">
               <Routes>
@@ -41,7 +41,7 @@ function App() {
               </Routes>
             </main>
             <CustomToastProvider />
-            <Footer /> {/* Including the Footer */}
+            <Footer />
           </div>
         </Router>
       </ThemeProvider>
