@@ -27,7 +27,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Router>
-          <div className="min-h-screen bg-background transition-colors duration-300 flex flex-col">
+          <div className="min-h-screen bg-background text-primary transition-colors duration-300 flex flex-col">
             <Navigation />
             <main className="flex-grow pt-16">
               <Routes>
