@@ -1,17 +1,31 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calculator, Atom, Users, History, Scale, Brain, Newspaper, X } from 'lucide-react'; // Added X for modal close
+import { Calculator, Atom, Users, History, Scale, Brain, Newspaper, X } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import SubjectCard from '../components/SubjectCard';
-import { CustomButton } from '@/components/CustomButton'; // Changed import
+import { CustomButton } from '@/components/CustomButton';
 
-// Placeholder for Dialog functionality - will be replaced with custom later
+// Custom Modal implementation
 const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; onOpenChange: (open: boolean) => void; title: string; children: React.ReactNode }) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-      <div className="relative w-full max-w-lg rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      onClick={() => onOpenChange(false)} // Close when clicking outside
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.2 }}
+        className="relative w-full max-w-lg rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg"
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+      >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{title}</h2>
           <CustomButton variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
@@ -19,8 +33,8 @@ const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; o
           </CustomButton>
         </div>
         {children}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -190,7 +204,7 @@ export default function Optional() {
       </motion.div>
 
       {/* Group Subjects Modal */}
-      <CustomModal // Changed to CustomModal
+      <CustomModal
         open={!!selectedGroup} 
         onOpenChange={() => setSelectedGroup(null)}
         title={`${selectedGroup?.name}: ${selectedGroup?.title}`}
@@ -210,7 +224,7 @@ export default function Optional() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
             >
-              <CustomButton // Changed to CustomButton
+              <CustomButton
                 variant="outline"
                 className="w-full justify-start h-auto p-4 text-left"
                 onClick={() => handleSubjectClick(subject)}

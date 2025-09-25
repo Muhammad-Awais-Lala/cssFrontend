@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Layers, ArrowRight, Target, Trophy, Users, Clock, CheckCircle, AlertCircle, BookMarked, GraduationCap, FileText, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { CustomButton } from '@/components/CustomButton'; // Changed import
+import { CustomButton } from '@/components/CustomButton';
+import React, { useState } from 'react'; // Import React and useState
 
-// Placeholder for Card functionality - will be replaced with custom later
+// Custom Card components
 const CustomCard = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <div className={`rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 ${className}`}>
     {children}
@@ -30,7 +31,7 @@ const CustomCardContent = ({ children, className }: { children: React.ReactNode;
   </div>
 );
 
-// Placeholder for Tabs functionality - will be replaced with custom later
+// Custom Tabs components
 const CustomTabs = ({ defaultValue, children, className }: { defaultValue: string; children: React.ReactNode; className?: string }) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
   const childrenArray = React.Children.toArray(children);
@@ -40,8 +41,8 @@ const CustomTabs = ({ defaultValue, children, className }: { defaultValue: strin
   return (
     <div className={className}>
       {React.isValidElement(tabsList) && React.cloneElement(tabsList, { activeTab, setActiveTab })}
-      {tabsContent.map(content => 
-        React.isValidElement(content) && React.cloneElement(content, { activeTab })
+      {tabsContent.map((content, index) => 
+        React.isValidElement(content) && React.cloneElement(content, { activeTab, key: index })
       )}
     </div>
   );
@@ -204,7 +205,7 @@ export default function Home() {
           className="flex flex-col sm:flex-row gap-6 justify-center"
         >
           <Link to="/compulsory">
-            <CustomButton // Changed to CustomButton
+            <CustomButton
               size="lg" 
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
             >
@@ -213,7 +214,7 @@ export default function Home() {
             </CustomButton>
           </Link>
           <Link to="/optional">
-            <CustomButton // Changed to CustomButton
+            <CustomButton
               variant="outline" 
               size="lg" 
               className="px-10 py-4 text-lg border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300"
@@ -300,23 +301,23 @@ export default function Home() {
           </p>
         </div>
 
-        <CustomTabs defaultValue="guide" className="w-full"> {/* Changed to CustomTabs */}
-          <CustomTabsList className="grid w-full grid-cols-1 sm:grid-cols-3 mb-8 h-auto"> {/* Changed to CustomTabsList */}
-            <CustomTabsTrigger value="guide" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4"> {/* Changed to CustomTabsTrigger */}
+        <CustomTabs defaultValue="guide" className="w-full">
+          <CustomTabsList className="grid w-full grid-cols-1 sm:grid-cols-3 mb-8 h-auto">
+            <CustomTabsTrigger value="guide" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4">
               <span className="hidden sm:inline">Preparation Guide</span>
               <span className="sm:hidden">Guide</span>
             </CustomTabsTrigger>
-            <CustomTabsTrigger value="subjects" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4"> {/* Changed to CustomTabsTrigger */}
+            <CustomTabsTrigger value="subjects" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4">
               <span className="hidden sm:inline">Subject Selection</span>
               <span className="sm:hidden">Subjects</span>
             </CustomTabsTrigger>
-            <CustomTabsTrigger value="eligibility" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4"> {/* Changed to CustomTabsTrigger */}
+            <CustomTabsTrigger value="eligibility" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4">
               <span className="hidden sm:inline">Eligibility & Rules</span>
               <span className="sm:hidden">Rules</span>
             </CustomTabsTrigger>
           </CustomTabsList>
 
-          <CustomTabsContent value="guide" className="space-y-6"> {/* Changed to CustomTabsContent */}
+          <CustomTabsContent value="guide" className="space-y-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {examGuideSteps.map((step, index) => {
                 const Icon = step.icon;
@@ -327,8 +328,8 @@ export default function Home() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <CustomCard className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500"> {/* Changed to CustomCard */}
-                      <CustomCardHeader> {/* Changed to CustomCardHeader */}
+                    <CustomCard className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
+                      <CustomCardHeader>
                         <div className="flex items-center space-x-3 mb-2">
                           <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                             <Icon className="w-5 h-5 text-blue-600" />
@@ -337,9 +338,9 @@ export default function Home() {
                             Step {step.step}
                           </span>
                         </div>
-                        <CustomCardTitle className="text-lg">{step.title}</CustomCardTitle> {/* Changed to CustomCardTitle */}
+                        <CustomCardTitle className="text-lg">{step.title}</CustomCardTitle>
                       </CustomCardHeader>
-                      <CustomCardContent> {/* Changed to CustomCardContent */}
+                      <CustomCardContent>
                         <p className="text-slate-600 dark:text-slate-400">{step.description}</p>
                       </CustomCardContent>
                     </CustomCard>
@@ -349,17 +350,17 @@ export default function Home() {
             </div>
           </CustomTabsContent>
 
-          <CustomTabsContent value="subjects" className="space-y-8"> {/* Changed to CustomTabsContent */}
+          <CustomTabsContent value="subjects" className="space-y-8">
             <div className="grid md:grid-cols-2 gap-8">
-              <CustomCard> {/* Changed to CustomCard */}
-                <CustomCardHeader> {/* Changed to CustomCardHeader */}
-                  <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
+              <CustomCard>
+                <CustomCardHeader>
+                  <CustomCardTitle className="flex items-center space-x-2">
                     <BookOpen className="w-5 h-5 text-blue-600" />
                     <span>Compulsory Subjects (600 marks)</span>
                   </CustomCardTitle>
-                  <CustomCardDescription>All candidates must appear in these subjects</CustomCardDescription> {/* Changed to CustomCardDescription */}
+                  <CustomCardDescription>All candidates must appear in these subjects</CustomCardDescription>
                 </CustomCardHeader>
-                <CustomCardContent> {/* Changed to CustomCardContent */}
+                <CustomCardContent>
                   <ul className="space-y-3">
                     {subjectSelectionGuide.compulsory.map((subject, index) => (
                       <motion.li
@@ -377,15 +378,15 @@ export default function Home() {
                 </CustomCardContent>
               </CustomCard>
 
-              <CustomCard> {/* Changed to CustomCard */}
-                <CustomCardHeader> {/* Changed to CustomCardHeader */}
-                  <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
+              <CustomCard>
+                <CustomCardHeader>
+                  <CustomCardTitle className="flex items-center space-x-2">
                     <Layers className="w-5 h-5 text-purple-600" />
                     <span>Optional Subjects (600 marks)</span>
                   </CustomCardTitle>
-                  <CustomCardDescription>Choose subjects based on your background</CustomCardDescription> {/* Changed to CustomCardDescription */}
+                  <CustomCardDescription>Choose subjects based on your background</CustomCardDescription>
                 </CustomCardHeader>
-                <CustomCardContent> {/* Changed to CustomCardContent */}
+                <CustomCardContent>
                   <ul className="space-y-3">
                     {subjectSelectionGuide.optional.map((subject, index) => (
                       <motion.li
@@ -405,16 +406,16 @@ export default function Home() {
             </div>
           </CustomTabsContent>
 
-          <CustomTabsContent value="eligibility" className="space-y-6"> {/* Changed to CustomTabsContent */}
-            <CustomCard> {/* Changed to CustomCard */}
-              <CustomCardHeader> {/* Changed to CustomCardHeader */}
-                <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
+          <CustomTabsContent value="eligibility" className="space-y-6">
+            <CustomCard>
+              <CustomCardHeader>
+                <CustomCardTitle className="flex items-center space-x-2">
                   <Users className="w-5 h-5 text-green-600" />
                   <span>Eligibility Requirements</span>
                 </CustomCardTitle>
-                <CustomCardDescription>Basic requirements to appear in CSS examination</CustomCardDescription> {/* Changed to CustomCardDescription */}
+                <CustomCardDescription>Basic requirements to appear in CSS examination</CustomCardDescription>
               </CustomCardHeader>
-              <CustomCardContent> {/* Changed to CustomCardContent */}
+              <CustomCardContent>
                 <ul className="space-y-4">
                   {eligibilityRequirements.map((requirement, index) => (
                     <motion.li
@@ -427,91 +428,91 @@ export default function Home() {
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <span className="text-slate-700 dark:text-slate-300">{requirement}</span>
                     </motion.li>
-                  ))}
-                </ul>
-              </CustomCardContent>
-            </CustomCard>
+                    ))}
+                  </ul>
+                </CustomCardContent>
+              </CustomCard>
 
-            <CustomCard> {/* Changed to CustomCard */}
-              <CustomCardHeader> {/* Changed to CustomCardHeader */}
-                <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
-                  <AlertCircle className="w-5 h-5 text-orange-600" />
-                  <span>Important Rules & Regulations</span>
-                </CustomCardTitle>
-              </CustomCardHeader>
-              <CustomCardContent> {/* Changed to CustomCardContent */}
-                <div className="space-y-4 text-slate-700 dark:text-slate-300">
-                  <p><strong>Application Process:</strong> Online application through FPSC website during specified period</p>
-                  <p><strong>Examination Pattern:</strong> Written examination followed by psychological assessment, medical examination, and interview</p>
-                  <p><strong>Passing Criteria:</strong> Minimum 50% marks in aggregate and 40% in each compulsory subject</p>
-                  <p><strong>Attempts:</strong> Maximum 3 attempts allowed (age permitting)</p>
-                  <p><strong>Medical Standards:</strong> Candidates must meet prescribed medical and physical standards</p>
-                </div>
-              </CustomCardContent>
-            </CustomCard>
-          </CustomTabsContent>
-        </CustomTabs>
-      </motion.div>
+              <CustomCard>
+                <CustomCardHeader>
+                  <CustomCardTitle className="flex items-center space-x-2">
+                    <AlertCircle className="w-5 h-5 text-orange-600" />
+                    <span>Important Rules & Regulations</span>
+                  </CustomCardTitle>
+                </CustomCardHeader>
+                <CustomCardContent>
+                  <div className="space-y-4 text-slate-700 dark:text-slate-300">
+                    <p><strong>Application Process:</strong> Online application through FPSC website during specified period</p>
+                    <p><strong>Examination Pattern:</strong> Written examination followed by psychological assessment, medical examination, and interview</p>
+                    <p><strong>Passing Criteria:</strong> Minimum 50% marks in aggregate and 40% in each compulsory subject</p>
+                    <p><strong>Attempts:</strong> Maximum 3 attempts allowed (age permitting)</p>
+                    <p><strong>Medical Standards:</strong> Candidates must meet prescribed medical and physical standards</p>
+                  </div>
+                </CustomCardContent>
+              </CustomCard>
+            </CustomTabsContent>
+          </CustomTabs>
+        </motion.div>
 
-      {/* Quick Access */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
-        className="mb-20"
-      >
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
-          Quick Access to Popular Subjects
-        </h2>
-        <div className="flex flex-wrap justify-center gap-4">
-          {quickAccessSubjects.map((subject, index) => (
-            <Link key={subject.slug} to={`/quiz/${subject.slug}`}>
+        {/* Quick Access */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+          className="mb-20"
+        >
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
+            Quick Access to Popular Subjects
+          </h2>
+          <div className="flex flex-wrap justify-center gap-4">
+            {quickAccessSubjects.map((subject, index) => (
+              <Link key={subject.slug} to={`/quiz/${subject.slug}`}>
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className={`${subject.color} text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer`}
+                >
+                  {subject.name}
+                </motion.div>
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Features */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.4 }}
+          className="grid md:grid-cols-3 gap-8"
+        >
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
               <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className={`${subject.color} text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer`}
+                transition={{ duration: 0.5, delay: 1.4 + index * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300"
               >
-                {subject.name}
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <Icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {feature.description}
+                </p>
               </motion.div>
-            </Link>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Features */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.4 }}
-        className="grid md:grid-cols-3 gap-8"
-      >
-        {features.map((feature, index) => {
-          const Icon = feature.icon;
-          return (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.4 + index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300"
-            >
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <Icon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                {feature.title}
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                {feature.description}
-              </p>
-            </motion.div>
-          );
-        })}
-      </motion.div>
-    </div>
-  );
-}
+            );
+          })}
+        </motion.div>
+      </div>
+    );
+  }

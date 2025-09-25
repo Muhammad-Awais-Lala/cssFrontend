@@ -1,17 +1,31 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, FileText, Lightbulb, Globe, Flag, Star, Book, Brain, X } from 'lucide-react'; // Added X for modal close
+import { BookOpen, FileText, Lightbulb, Globe, Flag, Star, Book, Brain, X } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import SubjectCard from '../components/SubjectCard';
 import { useState } from 'react';
-import { CustomButton } from '@/components/CustomButton'; // Changed import
+import { CustomButton } from '@/components/CustomButton';
 
-// Placeholder for Dialog functionality - will be replaced with custom later
+// Custom Modal implementation
 const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; onOpenChange: (open: boolean) => void; title: string; children: React.ReactNode }) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-      <div className="relative w-full max-w-md rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      onClick={() => onOpenChange(false)} // Close when clicking outside
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.2 }}
+        className="relative w-full max-w-md rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg"
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+      >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{title}</h2>
           <CustomButton variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
@@ -19,8 +33,8 @@ const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; o
           </CustomButton>
         </div>
         {children}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -149,7 +163,7 @@ export default function Compulsory() {
       </motion.div>
 
       {/* General Science & Ability Modal */}
-      <CustomModal // Changed to CustomModal
+      <CustomModal
         open={showGeneralScienceModal} 
         onOpenChange={setShowGeneralScienceModal}
         title="General Science & Ability"
@@ -160,7 +174,7 @@ export default function Compulsory() {
           </p>
           
           <div className="grid grid-cols-2 gap-4">
-            <CustomButton // Changed to CustomButton
+            <CustomButton
               variant="outline"
               className="h-24 flex flex-col items-center justify-center space-y-2"
               onClick={() => setShowGeneralScienceModal(false)}
@@ -169,7 +183,7 @@ export default function Compulsory() {
               <span>Books</span>
             </CustomButton>
             
-            <CustomButton // Changed to CustomButton
+            <CustomButton
               className="h-24 flex flex-col items-center justify-center space-y-2 bg-blue-600 hover:bg-blue-700"
               onClick={handleGeneralScienceMCQ}
             >
