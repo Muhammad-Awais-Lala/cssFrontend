@@ -9,7 +9,8 @@ import Quiz from './pages/Quiz';
 import Sessions from './pages/Sessions';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
-import CustomToastProvider from './components/CustomToastProvider'; // New import
+import CustomToastProvider from './components/CustomToastProvider';
+import Footer from './components/Footer'; // New import
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,9 +26,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Router>
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
+          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300 flex flex-col">
             <Navigation />
-            <main className="pt-16">
+            <main className="flex-grow pt-16">
               <Routes>
                 <Route path="/" element={<Navigate to="/home" replace />} />
                 <Route path="/home" element={<Home />} />
@@ -39,7 +40,8 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
-            <CustomToastProvider /> {/* Using custom toast provider */}
+            <CustomToastProvider />
+            <Footer /> {/* Including the Footer */}
           </div>
         </Router>
       </ThemeProvider>
