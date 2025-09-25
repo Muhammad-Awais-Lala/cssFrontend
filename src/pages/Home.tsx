@@ -2,77 +2,9 @@ import { motion } from 'framer-motion';
 import { BookOpen, Layers, ArrowRight, Target, Trophy, Users, Clock, CheckCircle, AlertCircle, BookMarked, GraduationCap, FileText, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CustomButton } from '@/components/CustomButton';
-import React, { useState } from 'react'; // Import React and useState
-
-// Custom Card components
-const CustomCard = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 ${className}`}>
-    {children}
-  </div>
-);
-const CustomCardHeader = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`p-6 pb-2 ${className}`}>
-    {children}
-  </div>
-);
-const CustomCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <h3 className={`text-lg font-semibold text-slate-900 dark:text-white ${className}`}>
-    {children}
-  </h3>
-);
-const CustomCardDescription = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <p className={`text-sm text-slate-600 dark:text-slate-400 ${className}`}>
-    {children}
-  </p>
-);
-const CustomCardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`p-6 pt-0 ${className}`}>
-    {children}
-  </div>
-);
-
-// Custom Tabs components
-const CustomTabs = ({ defaultValue, children, className }: { defaultValue: string; children: React.ReactNode; className?: string }) => {
-  const [activeTab, setActiveTab] = useState(defaultValue);
-  const childrenArray = React.Children.toArray(children);
-  const tabsList = childrenArray.find(child => React.isValidElement(child) && child.type === CustomTabsList);
-  const tabsContent = childrenArray.filter(child => React.isValidElement(child) && child.type === CustomTabsContent);
-
-  return (
-    <div className={className}>
-      {React.isValidElement(tabsList) && React.cloneElement(tabsList, { activeTab, setActiveTab })}
-      {tabsContent.map((content, index) => 
-        React.isValidElement(content) && React.cloneElement(content, { activeTab, key: index })
-      )}
-    </div>
-  );
-};
-
-const CustomTabsList = ({ children, className, activeTab, setActiveTab }: { children: React.ReactNode; className?: string; activeTab: string; setActiveTab: (tab: string) => void }) => (
-  <div className={`flex justify-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 mb-4 ${className}`}>
-    {React.Children.map(children, child => 
-      React.isValidElement(child) && React.cloneElement(child, { activeTab, setActiveTab })
-    )}
-  </div>
-);
-
-const CustomTabsTrigger = ({ value, children, className, activeTab, setActiveTab }: { value: string; children: React.ReactNode; className?: string; activeTab: string; setActiveTab: (tab: string) => void }) => (
-  <button
-    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-      activeTab === value
-        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow'
-        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-    } ${className}`}
-    onClick={() => setActiveTab(value)}
-  >
-    {children}
-  </button>
-);
-
-const CustomTabsContent = ({ value, children, className, activeTab }: { value: string; children: React.ReactNode; className?: string; activeTab: string }) => (
-  activeTab === value ? <div className={className}>{children}</div> : null
-);
-
+import React from 'react';
+import { CustomCard, CustomCardHeader, CustomCardTitle, CustomCardDescription, CustomCardContent } from '@/components/CustomCard';
+import { CustomTabs, CustomTabsList, CustomTabsTrigger, CustomTabsContent } from '@/components/CustomTabs'; // Updated import
 
 const quickAccessSubjects = [
   { name: 'Pakistan Affairs', slug: 'pakistan-affairs', color: 'bg-green-500' },

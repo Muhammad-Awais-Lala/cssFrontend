@@ -7,7 +7,12 @@ import { useCustomToast } from '@/hooks/useCustomToast';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { MCQLoadingSkeleton } from '../components/LoadingSkeleton';
 import ConfettiAnimation from '../components/ConfettiAnimation';
-import React from 'react'; // Import React
+import React from 'react';
+import { CustomProgress } from '@/components/CustomProgress'; // Updated import
+import { CustomRadioGroup, CustomRadioGroupItem } from '@/components/CustomRadioGroup'; // Updated import
+import { CustomLabel } from '@/components/CustomForm'; // Re-using CustomLabel from CustomForm
+import { CustomCard, CustomCardHeader, CustomCardTitle, CustomCardContent } from '@/components/CustomCard'; // Re-using CustomCard
+import { CustomCollapsible, CustomCollapsibleTrigger, CustomCollapsibleContent } from '@/components/CustomCollapsible'; // Updated import
 
 // Mock data structure for MCQ response
 interface MCQResponse {
@@ -33,104 +38,6 @@ interface UserAnswer {
   questionId: number;
   selectedOptionIndex: number | null;
 }
-
-// Custom Progress component
-const CustomProgress = ({ value, className }: { value: number; className?: string }) => (
-  <div className={`w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 ${className}`}>
-    <div
-      className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out"
-      style={{ width: `${value}%` }}
-    ></div>
-  </div>
-);
-
-// Custom RadioGroup and Label components
-const CustomRadioGroup = ({ value, onValueChange, disabled, children }: { value: string; onValueChange: (value: string) => void; disabled?: boolean; children: React.ReactNode }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!disabled) {
-      onValueChange(e.target.value);
-    }
-  };
-  return <div role="radiogroup" className="space-y-3" onChange={handleChange}>{children}</div>;
-};
-
-const CustomRadioGroupItem = ({ value, id, disabled, checked }: { value: string; id: string; disabled?: boolean; checked: boolean }) => (
-  <input
-    type="radio"
-    id={id}
-    name="radio-group" // All items in a group should have the same name
-    value={value}
-    disabled={disabled}
-    checked={checked}
-    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-slate-700"
-  />
-);
-
-const CustomLabel = ({ htmlFor, children, className }: { htmlFor: string; children: React.ReactNode; className?: string }) => (
-  <label htmlFor={htmlFor} className={`cursor-pointer ${className}`}>
-    {children}
-  </label>
-);
-
-// Custom Card components
-const CustomCard = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 ${className}`}>
-    {children}
-  </div>
-);
-const CustomCardHeader = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`p-6 pb-2 ${className}`}>
-    {children}
-  </div>
-);
-const CustomCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <h3 className={`text-lg font-semibold text-slate-900 dark:text-white ${className}`}>
-    {children}
-  </h3>
-);
-const CustomCardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`p-6 pt-0 ${className}`}>
-    {children}
-  </div>
-);
-
-// Custom Collapsible component
-const CustomCollapsible = ({ open, onOpenChange, children }: { open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }) => {
-  const childrenArray = React.Children.toArray(children);
-  const trigger = childrenArray.find(child => React.isValidElement(child) && child.type === CustomCollapsibleTrigger);
-  const content = childrenArray.find(child => React.isValidElement(child) && child.type === CustomCollapsibleContent);
-
-  return (
-    <div>
-      {React.isValidElement(trigger) && React.cloneElement(trigger, { onClick: () => onOpenChange(!open) })}
-      <AnimatePresence>
-        {open && React.isValidElement(content) && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            style={{ overflow: 'hidden' }}
-          >
-            {content}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-const CustomCollapsibleTrigger = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
-  <div onClick={onClick} className="cursor-pointer">
-    {children}
-  </div>
-);
-
-const CustomCollapsibleContent = ({ children }: { children: React.ReactNode }) => (
-  <div>
-    {children}
-  </div>
-);
 
 // Mock backend client for demonstration
 const mockBackend = {

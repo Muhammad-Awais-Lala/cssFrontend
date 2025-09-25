@@ -1,0 +1,72 @@
+import React from 'react';
+import { cn } from '@/lib/utils';
+
+interface CustomCardProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const CustomCard = React.forwardRef<HTMLDivElement, CustomCardProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+CustomCard.displayName = "CustomCard";
+
+interface CustomCardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const CustomCardHeader = React.forwardRef<HTMLDivElement, CustomCardHeaderProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn("p-6 pb-2", className)}
+      {...props}
+    />
+  )
+);
+CustomCardHeader.displayName = "CustomCardHeader";
+
+interface CustomCardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
+
+const CustomCardTitle = React.forwardRef<HTMLHeadingElement, CustomCardTitleProps>(
+  ({ className, ...props }, ref) => (
+    <h3
+      ref={ref}
+      className={cn("text-lg font-semibold text-slate-900 dark:text-white", className)}
+      {...props}
+    />
+  )
+);
+CustomCardTitle.displayName = "CustomCardTitle";
+
+interface CustomCardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+
+const CustomCardDescription = React.forwardRef<HTMLParagraphElement, CustomCardDescriptionProps>(
+  ({ className, ...props }, ref) => (
+    <p
+      ref={ref}
+      className={cn("text-sm text-slate-600 dark:text-slate-400", className)}
+      {...props}
+    />
+  )
+);
+CustomCardDescription.displayName = "CustomCardDescription";
+
+interface CustomCardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const CustomCardContent = React.forwardRef<HTMLDivElement, CustomCardContentProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn("p-6 pt-0", className)}
+      {...props}
+    />
+  )
+);
+CustomCardContent.displayName = "CustomCardContent";
+
+export { CustomCard, CustomCardHeader, CustomCardTitle, CustomCardDescription, CustomCardContent };

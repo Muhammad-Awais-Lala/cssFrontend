@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { Clock, Eye, Trash2, CheckCircle, XCircle, Circle } from 'lucide-react';
 import { CustomButton } from '@/components/CustomButton';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { CustomTable, CustomTableHeader, CustomTableBody, CustomTableRow, CustomTableHead, CustomTableCell } from '@/components/CustomTable';
+import { CustomSheet, CustomSheetTrigger, CustomSheetContent, CustomSheetHeader, CustomSheetTitle } from '@/components/CustomSheet';
+import { CustomAlertDialog, CustomAlertDialogTrigger, CustomAlertDialogContent, CustomAlertDialogHeader, CustomAlertDialogTitle, CustomAlertDialogDescription, CustomAlertDialogFooter, CustomAlertDialogAction, CustomAlertDialogCancel } from '@/components/CustomAlertDialog'; // Updated import
 
 interface QuizResult {
   right: number[];
@@ -13,115 +16,6 @@ interface QuizResult {
   subject: string;
   group?: string;
 }
-
-// Custom Table components
-const CustomTable = ({ children }: { children: React.ReactNode }) => (
-  <table className="w-full text-sm text-left text-slate-500 dark:text-slate-400">
-    {children}
-  </table>
-);
-const CustomTableHeader = ({ children }: { children: React.ReactNode }) => (
-  <thead className="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700 dark:text-slate-400">
-    {children}
-  </thead>
-);
-const CustomTableBody = ({ children }: { children: React.ReactNode }) => (
-  <tbody>
-    {children}
-  </tbody>
-);
-const CustomTableRow = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <tr className={`bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 ${className}`}>
-    {children}
-  </tr>
-);
-const CustomTableHead = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <th scope="col" className={`px-6 py-3 ${className}`}>
-    {children}
-  </th>
-);
-const CustomTableCell = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <td className={`px-6 py-4 ${className}`}>
-    {children}
-  </td>
-);
-
-// Custom Sheet implementation
-const CustomSheet = ({ open, onOpenChange, children }: { open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }) => {
-  if (!open) return null;
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex justify-end bg-black/80"
-      onClick={() => onOpenChange(false)} // Close when clicking outside
-    >
-      <motion.div
-        initial={{ x: '100%' }}
-        animate={{ x: 0 }}
-        exit={{ x: '100%' }}
-        transition={{ duration: 0.3 }}
-        className="w-full max-w-sm bg-white dark:bg-slate-800 p-6 shadow-lg h-full relative"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-      >
-        {children}
-        <CustomButton variant="ghost" size="sm" className="absolute top-4 right-4" onClick={() => onOpenChange(false)}>
-          <XCircle className="w-5 h-5" />
-        </CustomButton>
-      </motion.div>
-    </motion.div>
-  );
-};
-const CustomSheetTrigger = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
-  <div onClick={onClick}>{children}</div>
-);
-const CustomSheetContent = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
-const CustomSheetHeader = ({ children }: { children: React.ReactNode }) => <div className="mb-6">{children}</div>;
-const CustomSheetTitle = ({ children }: { children: React.ReactNode }) => <h2 className="text-xl font-semibold text-slate-900 dark:text-white text-center">{children}</h2>;
-
-
-// Custom AlertDialog implementation
-const CustomAlertDialog = ({ open, onOpenChange, children }: { open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }) => {
-  if (!open) return null;
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-      onClick={() => onOpenChange(false)} // Close when clicking outside
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.2 }}
-        className="relative w-full max-w-md rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-      >
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-};
-const CustomAlertDialogTrigger = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
-  <div onClick={onClick}>{children}</div>
-);
-const CustomAlertDialogContent = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
-const CustomAlertDialogHeader = ({ children }: { children: React.ReactNode }) => <div className="mb-4">{children}</div>;
-const CustomAlertDialogTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-lg font-semibold text-slate-900 dark:text-white text-center">{children}</h3>;
-const CustomAlertDialogDescription = ({ children }: { children: React.ReactNode }) => <p className="text-sm text-slate-600 dark:text-slate-400 text-center">{children}</p>;
-const CustomAlertDialogFooter = ({ children }: { children: React.ReactNode }) => <div className="flex justify-end space-x-2 mt-6">{children}</div>;
-const CustomAlertDialogAction = ({ children, onClick, className }: { children: React.ReactNode; onClick: () => void; className?: string }) => (
-  <CustomButton onClick={onClick} className={className}>{children}</CustomButton>
-);
-const CustomAlertDialogCancel = ({ children, onClick, className }: { children: React.ReactNode; onClick: () => void; className?: string }) => (
-  <CustomButton variant="outline" onClick={onClick} className={className}>{children}</CustomButton>
-);
-
 
 export default function Sessions() {
   const [sessions, setSessions] = useState<QuizResult[]>([]);

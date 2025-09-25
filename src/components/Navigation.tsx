@@ -4,6 +4,7 @@ import { Menu, X, Home, BookOpen, Layers, Clock, Settings, Sun, Moon, Monitor } 
 import { CustomButton } from '@/components/CustomButton';
 import { useTheme } from '../contexts/ThemeContext';
 import { motion } from 'framer-motion';
+import { CustomSheet, CustomSheetTrigger, CustomSheetContent, CustomSheetHeader, CustomSheetTitle } from '@/components/CustomSheet'; // Updated import
 
 // Custom DropdownMenu implementation
 const CustomDropdownMenu = ({ children, trigger, content }: { children: React.ReactNode, trigger: React.ReactNode, content: React.ReactNode }) => {
@@ -120,51 +121,44 @@ export default function Navigation() {
 
             {/* Mobile Menu */}
             <div className="md:hidden">
-              {/* Custom Sheet implementation */}
-              <CustomButton variant="ghost" size="sm" className="w-9 h-9 p-0" onClick={() => setIsOpen(!isOpen)}>
-                <Menu className="w-5 h-5" />
-              </CustomButton>
-              {isOpen && (
-                <motion.div
-                  initial={{ x: '100%' }}
-                  animate={{ x: 0 }}
-                  exit={{ x: '100%' }}
-                  transition={{ duration: 0.3 }}
-                  className="fixed inset-0 bg-black/80 z-50 flex justify-end"
-                >
-                  <div className="w-64 bg-white dark:bg-slate-900 p-6 shadow-lg h-full relative">
-                    <CustomButton variant="ghost" size="sm" className="absolute top-4 right-4 w-9 h-9 p-0" onClick={() => setIsOpen(false)}>
-                      <X className="w-5 h-5" />
-                    </CustomButton>
-                    <div className="flex flex-col space-y-4 mt-8">
-                      {navItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = location.pathname === item.path;
-                        
-                        return (
-                          <Link
-                            key={item.path}
-                            to={item.path}
-                            onClick={() => setIsOpen(false)}
+              <CustomSheet open={isOpen} onOpenChange={setIsOpen} side="right">
+                <CustomSheetTrigger onClick={() => setIsOpen(true)}>
+                  <CustomButton variant="ghost" size="sm" className="w-9 h-9 p-0">
+                    <Menu className="w-5 h-5" />
+                  </CustomButton>
+                </CustomSheetTrigger>
+                <CustomSheetContent className="w-64">
+                  <CustomSheetHeader>
+                    <CustomSheetTitle>Navigation</CustomSheetTitle>
+                  </CustomSheetHeader>
+                  <div className="flex flex-col space-y-4 mt-8">
+                    {navItems.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = location.pathname === item.path;
+                      
+                      return (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <CustomButton
+                            variant={isActive ? "default" : "ghost"}
+                            className={`w-full justify-start ${
+                              isActive 
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                                : 'text-slate-600 dark:text-slate-300'
+                            }`}
                           >
-                            <CustomButton
-                              variant={isActive ? "default" : "ghost"}
-                              className={`w-full justify-start ${
-                                isActive 
-                                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                                  : 'text-slate-600 dark:text-slate-300'
-                              }`}
-                            >
-                              <Icon className="w-4 h-4 mr-2" />
-                              {item.label}
-                            </CustomButton>
-                          </Link>
-                        );
-                      })}
-                    </div>
+                            <Icon className="w-4 h-4 mr-2" />
+                            {item.label}
+                          </CustomButton>
+                        </Link>
+                      );
+                    })}
                   </div>
-                </motion.div>
-              )}
+                </CustomSheetContent>
+              </CustomSheet>
             </div>
           </div>
         </div>

@@ -5,38 +5,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import SubjectCard from '../components/SubjectCard';
 import { useState } from 'react';
 import { CustomButton } from '@/components/CustomButton';
-
-// Custom Modal implementation
-const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; onOpenChange: (open: boolean) => void; title: string; children: React.ReactNode }) => {
-  if (!open) return null;
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-      onClick={() => onOpenChange(false)} // Close when clicking outside
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.2 }}
-        className="relative w-full max-w-md rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{title}</h2>
-          <CustomButton variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-            <X className="w-5 h-5" />
-          </CustomButton>
-        </div>
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-};
+import { CustomModal } from '@/components/CustomModal'; // Updated import
 
 const compulsorySubjects = [
   {

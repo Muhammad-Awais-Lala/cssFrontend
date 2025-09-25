@@ -5,38 +5,7 @@ import { Calculator, Atom, Users, History, Scale, Brain, Newspaper, X } from 'lu
 import Breadcrumbs from '../components/Breadcrumbs';
 import SubjectCard from '../components/SubjectCard';
 import { CustomButton } from '@/components/CustomButton';
-
-// Custom Modal implementation
-const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; onOpenChange: (open: boolean) => void; title: string; children: React.ReactNode }) => {
-  if (!open) return null;
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-      onClick={() => onOpenChange(false)} // Close when clicking outside
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.2 }}
-        className="relative w-full max-w-lg rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{title}</h2>
-          <CustomButton variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-            <X className="w-5 h-5" />
-          </CustomButton>
-        </div>
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-};
+import { CustomModal } from '@/components/CustomModal'; // Updated import
 
 const optionalGroups = [
   {
@@ -208,6 +177,7 @@ export default function Optional() {
         open={!!selectedGroup} 
         onOpenChange={() => setSelectedGroup(null)}
         title={`${selectedGroup?.name}: ${selectedGroup?.title}`}
+        contentClassName="max-w-lg"
       >
         <div className="space-y-3">
           <p className="text-center text-slate-600 dark:text-slate-400 mb-6">

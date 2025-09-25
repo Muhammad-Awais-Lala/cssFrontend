@@ -5,105 +5,10 @@ import { CustomButton } from '@/components/CustomButton';
 import { useCustomToast } from '@/hooks/useCustomToast';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { useTheme } from '../contexts/ThemeContext';
-import React from 'react'; // Import React
-
-// Custom Card components
-const CustomCard = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 ${className}`}>
-    {children}
-  </div>
-);
-const CustomCardHeader = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`p-6 pb-2 ${className}`}>
-    {children}
-  </div>
-);
-const CustomCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <h3 className={`text-lg font-semibold text-slate-900 dark:text-white ${className}`}>
-    {children}
-  </h3>
-);
-const CustomCardDescription = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <p className={`text-sm text-slate-600 dark:text-slate-400 ${className}`}>
-    {children}
-  </p>
-);
-const CustomCardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`p-6 pt-0 ${className}`}>
-    {children}
-  </div>
-);
-
-// Custom AlertDialog implementation
-const CustomAlertDialog = ({ open, onOpenChange, children }: { open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }) => {
-  if (!open) return null;
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-      onClick={() => onOpenChange(false)} // Close when clicking outside
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.2 }}
-        className="relative w-full max-w-md rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-      >
-        {children}
-        <CustomButton variant="ghost" size="sm" className="absolute top-4 right-4" onClick={() => onOpenChange(false)}>
-          <XCircle className="w-5 h-5" />
-        </CustomButton>
-      </motion.div>
-    </motion.div>
-  );
-};
-const CustomAlertDialogTrigger = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
-  <div onClick={onClick}>{children}</div>
-);
-const CustomAlertDialogContent = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
-const CustomAlertDialogHeader = ({ children }: { children: React.ReactNode }) => <div className="mb-4">{children}</div>;
-const CustomAlertDialogTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-lg font-semibold text-slate-900 dark:text-white text-center">{children}</h3>;
-const CustomAlertDialogDescription = ({ children }: { children: React.ReactNode }) => <p className="text-sm text-slate-600 dark:text-slate-400 text-center">{children}</p>;
-const CustomAlertDialogFooter = ({ children }: { children: React.ReactNode }) => <div className="flex justify-end space-x-2 mt-6">{children}</div>;
-const CustomAlertDialogAction = ({ children, onClick, className, disabled }: { children: React.ReactNode; onClick: () => void; className?: string; disabled?: boolean }) => (
-  <CustomButton onClick={onClick} className={className} disabled={disabled}>{children}</CustomButton>
-);
-const CustomAlertDialogCancel = ({ children, onClick, className }: { children: React.ReactNode; onClick: () => void; className?: string }) => (
-  <CustomButton variant="outline" onClick={onClick} className={className}>{children}</CustomButton>
-);
-
-// Custom Input component
-const CustomInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
-  ({ className, type = "text", ...props }, ref) => {
-    return (
-      <input
-        type={type}
-        className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${className}`}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
-CustomInput.displayName = "CustomInput";
-
-// Custom Label component
-const CustomLabel = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
-  ({ className, ...props }, ref) => (
-    <label
-      ref={ref}
-      className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-700 dark:text-slate-300 ${className}`}
-      {...props}
-    />
-  )
-);
-CustomLabel.displayName = "CustomLabel";
-
+import React from 'react';
+import { CustomCard, CustomCardHeader, CustomCardTitle, CustomCardDescription, CustomCardContent } from '@/components/CustomCard';
+import { CustomAlertDialog, CustomAlertDialogTrigger, CustomAlertDialogContent, CustomAlertDialogHeader, CustomAlertDialogTitle, CustomAlertDialogDescription, CustomAlertDialogFooter, CustomAlertDialogAction, CustomAlertDialogCancel } from '@/components/CustomAlertDialog';
+import { CustomInput, CustomLabel } from '@/components/CustomForm'; // Updated import
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
