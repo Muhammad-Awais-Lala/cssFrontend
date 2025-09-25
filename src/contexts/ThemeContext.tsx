@@ -13,6 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem('theme') as Theme;
+    console.log('Initial theme from localStorage:', stored);
     return stored || 'system';
   });
 
@@ -33,15 +34,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setActualTheme(resolvedTheme);
       root.classList.remove('light', 'dark');
       root.classList.add(resolvedTheme);
+      console.log('Theme updated:', theme, 'Resolved theme:', resolvedTheme, 'HTML classList:', root.classList.value);
     };
 
     updateTheme();
     localStorage.setItem('theme', theme);
+    console.log('Saved theme to localStorage:', theme);
 
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       mediaQuery.addEventListener('change', updateTheme);
-      return () => mediaQuery.removeEventListener('change', updateTheme);
+      console.log('System theme listener added.');
+      return () => {
+        mediaQuery.removeEventListener('change', updateTheme);
+        console.log('System theme listener removed.');
+      };
     }
   }, [theme]);
 
