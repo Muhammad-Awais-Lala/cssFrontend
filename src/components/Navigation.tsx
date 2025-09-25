@@ -21,7 +21,7 @@ const CustomDropdownMenu = ({ children, trigger, content }: { children: React.Re
           transition={{ duration: 0.2 }}
           className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
         >
-          {content}
+          {children} {/* Render children directly as content */}
         </motion.div>
       )}
     </div>
@@ -42,6 +42,12 @@ export default function Navigation() {
   const { theme, setTheme } = useTheme();
 
   const ThemeIcon = theme === 'light' ? Sun : theme === 'dark' ? Moon : Monitor;
+
+  const themeOptions = [
+    { value: 'light', label: 'Light', icon: Sun },
+    { value: 'dark', label: 'Dark', icon: Moon },
+    { value: 'system', label: 'System', icon: Monitor },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
@@ -101,23 +107,27 @@ export default function Navigation() {
                   <ThemeIcon className="w-4 h-4" />
                 </CustomButton>
               }
-              content={
-                <div className="py-1">
-                  <div className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center" onClick={() => setTheme('light')}>
-                    <Sun className="w-4 h-4 mr-2" />
-                    Light
-                  </div>
-                  <div className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center" onClick={() => setTheme('dark')}>
-                    <Moon className="w-4 h-4 mr-2" />
-                    Dark
-                  </div>
-                  <div className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center" onClick={() => setTheme('system')}>
-                    <Monitor className="w-4 h-4 mr-2" />
-                    System
-                  </div>
-                </div>
-              }
-            />
+            >
+              <div className="py-1">
+                {themeOptions.map((option) => {
+                  const Icon = option.icon;
+                  return (
+                    <CustomButton
+                      key={option.value}
+                      variant={theme === option.value ? "default" : "ghost"}
+                      className="w-full justify-start text-sm px-4 py-2"
+                      onClick={() => {
+                        setTheme(option.value as any);
+                        setIsOpen(false); // Close dropdown after selection
+                      }}
+                    >
+                      <Icon className="w-4 h-4 mr-2" />
+                      {option.label}
+                    </CustomButton>
+                  );
+                })}
+              </div>
+            </CustomDropdownMenu>
 
             {/* Mobile Menu */}
             <div className="md:hidden">
