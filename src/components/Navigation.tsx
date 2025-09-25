@@ -1,11 +1,24 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, BookOpen, Layers, Clock, Settings, Sun, Moon, Monitor } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { CustomButton } from '@/components/CustomButton'; // Changed import
 import { useTheme } from '../contexts/ThemeContext';
 import { motion } from 'framer-motion';
+
+// Placeholder for DropdownMenu functionality - will be replaced with custom later
+const CustomDropdownMenu = ({ children, trigger, content }: { children: React.ReactNode, trigger: React.ReactNode, content: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="relative">
+      <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+          {content}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const navItems = [
   { path: '/home', label: 'Home', icon: Home },
@@ -54,7 +67,7 @@ export default function Navigation() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Button
+                    <CustomButton // Changed to CustomButton
                       variant={isActive ? "default" : "ghost"}
                       size="sm"
                       className={`flex items-center space-x-2 ${
@@ -65,7 +78,7 @@ export default function Navigation() {
                     >
                       <Icon className="w-4 h-4" />
                       <span>{item.label}</span>
-                    </Button>
+                    </CustomButton>
                   </motion.div>
                 </Link>
               );
@@ -74,65 +87,71 @@ export default function Navigation() {
 
           {/* Theme Toggle & Mobile Menu */}
           <div className="flex items-center space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-9 h-9 p-0">
+            <CustomDropdownMenu // Placeholder for DropdownMenu
+              trigger={
+                <CustomButton variant="ghost" size="sm" className="w-9 h-9 p-0">
                   <ThemeIcon className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme('light')}>
-                  <Sun className="w-4 h-4 mr-2" />
-                  Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
-                  <Moon className="w-4 h-4 mr-2" />
-                  Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>
-                  <Monitor className="w-4 h-4 mr-2" />
-                  System
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                </CustomButton>
+              }
+              content={
+                <div className="py-1">
+                  <div className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center" onClick={() => setTheme('light')}>
+                    <Sun className="w-4 h-4 mr-2" />
+                    Light
+                  </div>
+                  <div className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center" onClick={() => setTheme('dark')}>
+                    <Moon className="w-4 h-4 mr-2" />
+                    Dark
+                  </div>
+                  <div className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center" onClick={() => setTheme('system')}>
+                    <Monitor className="w-4 h-4 mr-2" />
+                    System
+                  </div>
+                </div>
+              }
+            />
 
             {/* Mobile Menu */}
             <div className="md:hidden">
-              <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="w-9 h-9 p-0">
-                    <Menu className="w-5 h-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-64">
-                  <div className="flex flex-col space-y-4 mt-8">
-                    {navItems.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = location.pathname === item.path;
-                      
-                      return (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          <Button
-                            variant={isActive ? "default" : "ghost"}
-                            className={`w-full justify-start ${
-                              isActive 
-                                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                                : 'text-slate-600 dark:text-slate-300'
-                            }`}
+              {/* Placeholder for Sheet functionality - will be replaced with custom later */}
+              <CustomButton variant="ghost" size="sm" className="w-9 h-9 p-0" onClick={() => setIsOpen(!isOpen)}>
+                <Menu className="w-5 h-5" />
+              </CustomButton>
+              {isOpen && (
+                <div className="fixed inset-0 bg-black/80 z-50 flex justify-end">
+                  <div className="w-64 bg-white dark:bg-slate-900 p-6 shadow-lg h-full relative">
+                    <CustomButton variant="ghost" size="sm" className="absolute top-4 right-4 w-9 h-9 p-0" onClick={() => setIsOpen(false)}>
+                      <X className="w-5 h-5" />
+                    </CustomButton>
+                    <div className="flex flex-col space-y-4 mt-8">
+                      {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = location.pathname === item.path;
+                        
+                        return (
+                          <Link
+                            key={item.path}
+                            to={item.path}
+                            onClick={() => setIsOpen(false)}
                           >
-                            <Icon className="w-4 h-4 mr-2" />
-                            {item.label}
-                          </Button>
-                        </Link>
-                      );
-                    })}
+                            <CustomButton // Changed to CustomButton
+                              variant={isActive ? "default" : "ghost"}
+                              className={`w-full justify-start ${
+                                isActive 
+                                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                                  : 'text-slate-600 dark:text-slate-300'
+                              }`}
+                            >
+                              <Icon className="w-4 h-4 mr-2" />
+                              {item.label}
+                            </CustomButton>
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
-                </SheetContent>
-              </Sheet>
+                </div>
+              )}
             </div>
           </div>
         </div>

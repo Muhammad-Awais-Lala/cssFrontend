@@ -1,11 +1,28 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calculator, Atom, Users, History, Scale, Brain, Newspaper } from 'lucide-react';
+import { Calculator, Atom, Users, History, Scale, Brain, Newspaper, X } from 'lucide-react'; // Added X for modal close
 import Breadcrumbs from '../components/Breadcrumbs';
 import SubjectCard from '../components/SubjectCard';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { CustomButton } from '@/components/CustomButton'; // Changed import
+
+// Placeholder for Dialog functionality - will be replaced with custom later
+const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; onOpenChange: (open: boolean) => void; title: string; children: React.ReactNode }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+      <div className="relative w-full max-w-lg rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{title}</h2>
+          <CustomButton variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+            <X className="w-5 h-5" />
+          </CustomButton>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const optionalGroups = [
   {
@@ -173,45 +190,41 @@ export default function Optional() {
       </motion.div>
 
       {/* Group Subjects Modal */}
-      <Dialog open={!!selectedGroup} onOpenChange={() => setSelectedGroup(null)}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-center">
-              {selectedGroup?.name}: {selectedGroup?.title}
-            </DialogTitle>
-          </DialogHeader>
+      <CustomModal // Changed to CustomModal
+        open={!!selectedGroup} 
+        onOpenChange={() => setSelectedGroup(null)}
+        title={`${selectedGroup?.name}: ${selectedGroup?.title}`}
+      >
+        <div className="space-y-3">
+          <p className="text-center text-slate-600 dark:text-slate-400 mb-6">
+            {selectedGroup?.description}
+          </p>
+          <p className="text-center text-sm text-slate-500 dark:text-slate-500 mb-6">
+            Select a subject to start practicing:
+          </p>
           
-          <div className="space-y-3">
-            <p className="text-center text-slate-600 dark:text-slate-400 mb-6">
-              {selectedGroup?.description}
-            </p>
-            <p className="text-center text-sm text-slate-500 dark:text-slate-500 mb-6">
-              Select a subject to start practicing:
-            </p>
-            
-            {selectedGroup?.subjects.map((subject, index) => (
-              <motion.div
-                key={subject.slug}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
+          {selectedGroup?.subjects.map((subject, index) => (
+            <motion.div
+              key={subject.slug}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2, delay: index * 0.05 }}
+            >
+              <CustomButton // Changed to CustomButton
+                variant="outline"
+                className="w-full justify-start h-auto p-4 text-left"
+                onClick={() => handleSubjectClick(subject)}
               >
-                <Button
-                  variant="outline"
-                  className="w-full justify-start h-auto p-4 text-left"
-                  onClick={() => handleSubjectClick(subject)}
-                >
-                  <div>
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      {subject.name}
-                    </div>
+                <div>
+                  <div className="font-medium text-slate-900 dark:text-white">
+                    {subject.name}
                   </div>
-                </Button>
-              </motion.div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
+                </div>
+              </CustomButton>
+            </motion.div>
+          ))}
+        </div>
+      </CustomModal>
     </div>
   );
 }

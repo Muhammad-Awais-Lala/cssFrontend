@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Eye, Trash2, CheckCircle, XCircle, Circle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { CustomButton } from '@/components/CustomButton'; // Changed import
 import Breadcrumbs from '../components/Breadcrumbs';
 
 interface QuizResult {
@@ -17,9 +14,93 @@ interface QuizResult {
   group?: string;
 }
 
+// Placeholder for Table components
+const CustomTable = ({ children }: { children: React.ReactNode }) => (
+  <table className="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+    {children}
+  </table>
+);
+const CustomTableHeader = ({ children }: { children: React.ReactNode }) => (
+  <thead className="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700 dark:text-slate-400">
+    {children}
+  </thead>
+);
+const CustomTableBody = ({ children }: { children: React.ReactNode }) => (
+  <tbody>
+    {children}
+  </tbody>
+);
+const CustomTableRow = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <tr className={`bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 ${className}`}>
+    {children}
+  </tr>
+);
+const CustomTableHead = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <th scope="col" className={`px-6 py-3 ${className}`}>
+    {children}
+  </th>
+);
+const CustomTableCell = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <td className={`px-6 py-4 ${className}`}>
+    {children}
+  </td>
+);
+
+// Placeholder for Sheet functionality (using a simple modal-like approach)
+const CustomSheet = ({ open, onOpenChange, children }: { open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/80">
+      <div className="w-full max-w-sm bg-white dark:bg-slate-800 p-6 shadow-lg h-full relative">
+        {children}
+        <CustomButton variant="ghost" size="sm" className="absolute top-4 right-4" onClick={() => onOpenChange(false)}>
+          <XCircle className="w-5 h-5" />
+        </CustomButton>
+      </div>
+    </div>
+  );
+};
+const CustomSheetTrigger = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
+  <div onClick={onClick}>{children}</div>
+);
+const CustomSheetContent = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
+const CustomSheetHeader = ({ children }: { children: React.ReactNode }) => <div className="mb-6">{children}</div>;
+const CustomSheetTitle = ({ children }: { children: React.ReactNode }) => <h2 className="text-xl font-semibold text-slate-900 dark:text-white text-center">{children}</h2>;
+
+
+// Placeholder for AlertDialog functionality
+const CustomAlertDialog = ({ open, onOpenChange, children }: { open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+      <div className="relative w-full max-w-md rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg">
+        {children}
+      </div>
+    </div>
+  );
+};
+const CustomAlertDialogTrigger = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
+  <div onClick={onClick}>{children}</div>
+);
+const CustomAlertDialogContent = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
+const CustomAlertDialogHeader = ({ children }: { children: React.ReactNode }) => <div className="mb-4">{children}</div>;
+const CustomAlertDialogTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-lg font-semibold text-slate-900 dark:text-white text-center">{children}</h3>;
+const CustomAlertDialogDescription = ({ children }: { children: React.ReactNode }) => <p className="text-sm text-slate-600 dark:text-slate-400 text-center">{children}</p>;
+const CustomAlertDialogFooter = ({ children }: { children: React.ReactNode }) => <div className="flex justify-end space-x-2 mt-6">{children}</div>;
+const CustomAlertDialogAction = ({ children, onClick, className }: { children: React.ReactNode; onClick: () => void; className?: string }) => (
+  <CustomButton onClick={onClick} className={className}>{children}</CustomButton>
+);
+const CustomAlertDialogCancel = ({ children, onClick, className }: { children: React.ReactNode; onClick: () => void; className?: string }) => (
+  <CustomButton variant="outline" onClick={onClick} className={className}>{children}</CustomButton>
+);
+
+
 export default function Sessions() {
   const [sessions, setSessions] = useState<QuizResult[]>([]);
   const [selectedSession, setSelectedSession] = useState<QuizResult | null>(null);
+  const [showSheet, setShowSheet] = useState(false);
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+
 
   useEffect(() => {
     const savedSessions = JSON.parse(localStorage.getItem('quiz-sessions') || '[]');
@@ -29,6 +110,7 @@ export default function Sessions() {
   const clearHistory = () => {
     localStorage.removeItem('quiz-sessions');
     setSessions([]);
+    setShowAlertDialog(false);
   };
 
   const formatDate = (timestamp: string) => {
@@ -62,28 +144,28 @@ export default function Sessions() {
           </div>
           
           {sessions.length > 0 && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" className="text-red-600 hover:text-red-700">
+            <CustomAlertDialog open={showAlertDialog} onOpenChange={setShowAlertDialog}> {/* Changed to CustomAlertDialog */}
+              <CustomAlertDialogTrigger onClick={() => setShowAlertDialog(true)}> {/* Changed to CustomAlertDialogTrigger */}
+                <CustomButton variant="outline" className="text-red-600 hover:text-red-700"> {/* Changed to CustomButton */}
                   <Trash2 className="w-4 h-4 mr-2" />
                   Clear History
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Clear Quiz History</AlertDialogTitle>
-                  <AlertDialogDescription>
+                </CustomButton>
+              </CustomAlertDialogTrigger>
+              <CustomAlertDialogContent> {/* Changed to CustomAlertDialogContent */}
+                <CustomAlertDialogHeader> {/* Changed to CustomAlertDialogHeader */}
+                  <CustomAlertDialogTitle>Clear Quiz History</CustomAlertDialogTitle> {/* Changed to CustomAlertDialogTitle */}
+                  <CustomAlertDialogDescription> {/* Changed to CustomAlertDialogDescription */}
                     This action cannot be undone. This will permanently delete all your quiz session data.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={clearHistory} className="bg-red-600 hover:bg-red-700">
+                  </CustomAlertDialogDescription>
+                </CustomAlertDialogHeader>
+                <CustomAlertDialogFooter> {/* Changed to CustomAlertDialogFooter */}
+                  <CustomAlertDialogCancel onClick={() => setShowAlertDialog(false)}>Cancel</CustomAlertDialogCancel> {/* Changed to CustomAlertDialogCancel */}
+                  <CustomAlertDialogAction onClick={clearHistory} className="bg-red-600 hover:bg-red-700"> {/* Changed to CustomAlertDialogAction */}
                     Clear History
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                  </CustomAlertDialogAction>
+                </CustomAlertDialogFooter>
+              </CustomAlertDialogContent>
+            </CustomAlertDialog>
           )}
         </div>
 
@@ -96,73 +178,72 @@ export default function Sessions() {
             <p className="text-slate-600 dark:text-slate-400 mb-6">
               Start taking quizzes to see your session history here
             </p>
-            <Button onClick={() => window.history.back()}>
+            <CustomButton onClick={() => window.history.back()}> {/* Changed to CustomButton */}
               Start a Quiz
-            </Button>
+            </CustomButton>
           </div>
         ) : (
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Date & Time</TableHead>
-                  <TableHead className="text-center">Correct</TableHead>
-                  <TableHead className="text-center">Wrong</TableHead>
-                  <TableHead className="text-center">Empty</TableHead>
-                  <TableHead className="text-center">Score</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <CustomTable> {/* Changed to CustomTable */}
+              <CustomTableHeader> {/* Changed to CustomTableHeader */}
+                <CustomTableRow> {/* Changed to CustomTableRow */}
+                  <CustomTableHead>Subject</CustomTableHead> {/* Changed to CustomTableHead */}
+                  <CustomTableHead>Date & Time</CustomTableHead> {/* Changed to CustomTableHead */}
+                  <CustomTableHead className="text-center">Correct</CustomTableHead> {/* Changed to CustomTableHead */}
+                  <CustomTableHead className="text-center">Wrong</CustomTableHead> {/* Changed to CustomTableHead */}
+                  <CustomTableHead className="text-center">Empty</CustomTableHead> {/* Changed to CustomTableHead */}
+                  <CustomTableHead className="text-center">Score</CustomTableHead> {/* Changed to CustomTableHead */}
+                  <CustomTableHead className="text-center">Actions</CustomTableHead> {/* Changed to CustomTableHead */}
+                </CustomTableRow>
+              </CustomTableHeader>
+              <CustomTableBody> {/* Changed to CustomTableBody */}
                 {sessions.map((session, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">
+                  <CustomTableRow key={index}> {/* Changed to CustomTableRow */}
+                    <CustomTableCell className="font-medium"> {/* Changed to CustomTableCell */}
                       <div>
                         <div className="text-slate-900 dark:text-white">{session.subject}</div>
                         {session.group && (
                           <div className="text-sm text-slate-500">{session.group}</div>
                         )}
                       </div>
-                    </TableCell>
-                    <TableCell className="text-slate-600 dark:text-slate-400">
+                    </CustomTableCell>
+                    <CustomTableCell className="text-slate-600 dark:text-slate-400"> {/* Changed to CustomTableCell */}
                       {formatDate(session.timestamp)}
-                    </TableCell>
-                    <TableCell className="text-center">
+                    </CustomTableCell>
+                    <CustomTableCell className="text-center"> {/* Changed to CustomTableCell */}
                       <span className="inline-flex items-center justify-center w-8 h-8 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-full text-sm font-medium">
                         {session.totals.right}
                       </span>
-                    </TableCell>
-                    <TableCell className="text-center">
+                    </CustomTableCell>
+                    <CustomTableCell className="text-center"> {/* Changed to CustomTableCell */}
                       <span className="inline-flex items-center justify-center w-8 h-8 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-full text-sm font-medium">
                         {session.totals.wrong}
                       </span>
-                    </TableCell>
-                    <TableCell className="text-center">
+                    </CustomTableCell>
+                    <CustomTableCell className="text-center"> {/* Changed to CustomTableCell */}
                       <span className="inline-flex items-center justify-center w-8 h-8 bg-slate-100 dark:bg-slate-700 text-slate-600 rounded-full text-sm font-medium">
                         {session.totals.empty}
                       </span>
-                    </TableCell>
-                    <TableCell className="text-center">
+                    </CustomTableCell>
+                    <CustomTableCell className="text-center"> {/* Changed to CustomTableCell */}
                       <span className={`font-semibold ${getScoreColor(session.totals.right)}`}>
                         {Math.round((session.totals.right / 15) * 100)}%
                       </span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Sheet>
-                        <SheetTrigger asChild>
-                          <Button 
+                    </CustomTableCell>
+                    <CustomTableCell className="text-center"> {/* Changed to CustomTableCell */}
+                      <CustomSheet open={showSheet && selectedSession?.timestamp === session.timestamp} onOpenChange={setShowSheet}> {/* Changed to CustomSheet */}
+                        <CustomSheetTrigger onClick={() => { setSelectedSession(session); setShowSheet(true); }}> {/* Changed to CustomSheetTrigger */}
+                          <CustomButton 
                             variant="ghost" 
                             size="sm"
-                            onClick={() => setSelectedSession(session)}
                           >
                             <Eye className="w-4 h-4" />
-                          </Button>
-                        </SheetTrigger>
-                        <SheetContent>
-                          <SheetHeader>
-                            <SheetTitle>Session Details</SheetTitle>
-                          </SheetHeader>
+                          </CustomButton>
+                        </CustomSheetTrigger>
+                        <CustomSheetContent> {/* Changed to CustomSheetContent */}
+                          <CustomSheetHeader> {/* Changed to CustomSheetHeader */}
+                            <CustomSheetTitle>Session Details</CustomSheetTitle> {/* Changed to CustomSheetTitle */}
+                          </CustomSheetHeader>
                           
                           {selectedSession && (
                             <div className="mt-6 space-y-6">
@@ -236,13 +317,13 @@ export default function Sessions() {
                               </div>
                             </div>
                           )}
-                        </SheetContent>
-                      </Sheet>
-                    </TableCell>
-                  </TableRow>
+                        </CustomSheetContent>
+                      </CustomSheet>
+                    </CustomTableCell>
+                  </CustomTableRow>
                 ))}
-              </TableBody>
-            </Table>
+              </CustomTableBody>
+            </CustomTable>
           </div>
         )}
       </motion.div>

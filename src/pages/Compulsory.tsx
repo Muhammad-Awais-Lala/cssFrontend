@@ -1,12 +1,28 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, FileText, Lightbulb, Globe, Flag, Star } from 'lucide-react';
+import { BookOpen, FileText, Lightbulb, Globe, Flag, Star, Book, Brain, X } from 'lucide-react'; // Added X for modal close
 import Breadcrumbs from '../components/Breadcrumbs';
 import SubjectCard from '../components/SubjectCard';
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Book, Brain } from 'lucide-react';
+import { CustomButton } from '@/components/CustomButton'; // Changed import
+
+// Placeholder for Dialog functionality - will be replaced with custom later
+const CustomModal = ({ open, onOpenChange, title, children }: { open: boolean; onOpenChange: (open: boolean) => void; title: string; children: React.ReactNode }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+      <div className="relative w-full max-w-md rounded-lg bg-white dark:bg-slate-800 p-6 shadow-lg">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{title}</h2>
+          <CustomButton variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+            <X className="w-5 h-5" />
+          </CustomButton>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const compulsorySubjects = [
   {
@@ -133,50 +149,48 @@ export default function Compulsory() {
       </motion.div>
 
       {/* General Science & Ability Modal */}
-      <Dialog open={showGeneralScienceModal} onOpenChange={setShowGeneralScienceModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center">General Science & Ability</DialogTitle>
-          </DialogHeader>
+      <CustomModal // Changed to CustomModal
+        open={showGeneralScienceModal} 
+        onOpenChange={setShowGeneralScienceModal}
+        title="General Science & Ability"
+      >
+        <div className="space-y-4">
+          <p className="text-center text-slate-600 dark:text-slate-400">
+            Choose how you'd like to study this subject:
+          </p>
           
-          <div className="space-y-4">
-            <p className="text-center text-slate-600 dark:text-slate-400">
-              Choose how you'd like to study this subject:
-            </p>
+          <div className="grid grid-cols-2 gap-4">
+            <CustomButton // Changed to CustomButton
+              variant="outline"
+              className="h-24 flex flex-col items-center justify-center space-y-2"
+              onClick={() => setShowGeneralScienceModal(false)}
+            >
+              <Book className="w-6 h-6" />
+              <span>Books</span>
+            </CustomButton>
             
-            <div className="grid grid-cols-2 gap-4">
-              <Button
-                variant="outline"
-                className="h-24 flex flex-col items-center justify-center space-y-2"
-                onClick={() => setShowGeneralScienceModal(false)}
-              >
-                <Book className="w-6 h-6" />
-                <span>Books</span>
-              </Button>
-              
-              <Button
-                className="h-24 flex flex-col items-center justify-center space-y-2 bg-blue-600 hover:bg-blue-700"
-                onClick={handleGeneralScienceMCQ}
-              >
-                <Brain className="w-6 h-6" />
-                <span>MCQs</span>
-              </Button>
-            </div>
-            
-            {/* Books List */}
-            <div className="mt-6 space-y-3 max-h-60 overflow-y-auto">
-              <h3 className="font-semibold text-slate-900 dark:text-white">Recommended Books:</h3>
-              {generalScienceBooks.map((book, index) => (
-                <div key={index} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-                  <h4 className="font-medium text-slate-900 dark:text-white">{book.title}</h4>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{book.author}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">{book.description}</p>
-                </div>
-              ))}
-            </div>
+            <CustomButton // Changed to CustomButton
+              className="h-24 flex flex-col items-center justify-center space-y-2 bg-blue-600 hover:bg-blue-700"
+              onClick={handleGeneralScienceMCQ}
+            >
+              <Brain className="w-6 h-6" />
+              <span>MCQs</span>
+            </CustomButton>
           </div>
-        </DialogContent>
-      </Dialog>
+          
+          {/* Books List */}
+          <div className="mt-6 space-y-3 max-h-60 overflow-y-auto">
+            <h3 className="font-semibold text-slate-900 dark:text-white">Recommended Books:</h3>
+            {generalScienceBooks.map((book, index) => (
+              <div key={index} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <h4 className="font-medium text-slate-900 dark:text-white">{book.title}</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{book.author}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">{book.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CustomModal>
     </div>
   );
 }

@@ -1,9 +1,77 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Layers, ArrowRight, Target, Trophy, Users, Clock, CheckCircle, AlertCircle, BookMarked, GraduationCap, FileText, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CustomButton } from '@/components/CustomButton'; // Changed import
+
+// Placeholder for Card functionality - will be replaced with custom later
+const CustomCard = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 ${className}`}>
+    {children}
+  </div>
+);
+const CustomCardHeader = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <div className={`p-6 pb-2 ${className}`}>
+    {children}
+  </div>
+);
+const CustomCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <h3 className={`text-lg font-semibold text-slate-900 dark:text-white ${className}`}>
+    {children}
+  </h3>
+);
+const CustomCardDescription = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <p className={`text-sm text-slate-600 dark:text-slate-400 ${className}`}>
+    {children}
+  </p>
+);
+const CustomCardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <div className={`p-6 pt-0 ${className}`}>
+    {children}
+  </div>
+);
+
+// Placeholder for Tabs functionality - will be replaced with custom later
+const CustomTabs = ({ defaultValue, children, className }: { defaultValue: string; children: React.ReactNode; className?: string }) => {
+  const [activeTab, setActiveTab] = useState(defaultValue);
+  const childrenArray = React.Children.toArray(children);
+  const tabsList = childrenArray.find(child => React.isValidElement(child) && child.type === CustomTabsList);
+  const tabsContent = childrenArray.filter(child => React.isValidElement(child) && child.type === CustomTabsContent);
+
+  return (
+    <div className={className}>
+      {React.isValidElement(tabsList) && React.cloneElement(tabsList, { activeTab, setActiveTab })}
+      {tabsContent.map(content => 
+        React.isValidElement(content) && React.cloneElement(content, { activeTab })
+      )}
+    </div>
+  );
+};
+
+const CustomTabsList = ({ children, className, activeTab, setActiveTab }: { children: React.ReactNode; className?: string; activeTab: string; setActiveTab: (tab: string) => void }) => (
+  <div className={`flex justify-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 mb-4 ${className}`}>
+    {React.Children.map(children, child => 
+      React.isValidElement(child) && React.cloneElement(child, { activeTab, setActiveTab })
+    )}
+  </div>
+);
+
+const CustomTabsTrigger = ({ value, children, className, activeTab, setActiveTab }: { value: string; children: React.ReactNode; className?: string; activeTab: string; setActiveTab: (tab: string) => void }) => (
+  <button
+    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+      activeTab === value
+        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow'
+        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+    } ${className}`}
+    onClick={() => setActiveTab(value)}
+  >
+    {children}
+  </button>
+);
+
+const CustomTabsContent = ({ value, children, className, activeTab }: { value: string; children: React.ReactNode; className?: string; activeTab: string }) => (
+  activeTab === value ? <div className={className}>{children}</div> : null
+);
+
 
 const quickAccessSubjects = [
   { name: 'Pakistan Affairs', slug: 'pakistan-affairs', color: 'bg-green-500' },
@@ -136,15 +204,22 @@ export default function Home() {
           className="flex flex-col sm:flex-row gap-6 justify-center"
         >
           <Link to="/compulsory">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
+            <CustomButton // Changed to CustomButton
+              size="lg" 
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
               Start Practicing
               <ArrowRight className="w-6 h-6 ml-3" />
-            </Button>
+            </CustomButton>
           </Link>
           <Link to="/optional">
-            <Button variant="outline" size="lg" className="px-10 py-4 text-lg border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300">
+            <CustomButton // Changed to CustomButton
+              variant="outline" 
+              size="lg" 
+              className="px-10 py-4 text-lg border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300"
+            >
               Explore Subjects
-            </Button>
+            </CustomButton>
           </Link>
         </motion.div>
       </motion.div>
@@ -225,23 +300,23 @@ export default function Home() {
           </p>
         </div>
 
-        <Tabs defaultValue="guide" className="w-full">
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 mb-8 h-auto">
-            <TabsTrigger value="guide" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4">
+        <CustomTabs defaultValue="guide" className="w-full"> {/* Changed to CustomTabs */}
+          <CustomTabsList className="grid w-full grid-cols-1 sm:grid-cols-3 mb-8 h-auto"> {/* Changed to CustomTabsList */}
+            <CustomTabsTrigger value="guide" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4"> {/* Changed to CustomTabsTrigger */}
               <span className="hidden sm:inline">Preparation Guide</span>
               <span className="sm:hidden">Guide</span>
-            </TabsTrigger>
-            <TabsTrigger value="subjects" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4">
+            </CustomTabsTrigger>
+            <CustomTabsTrigger value="subjects" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4"> {/* Changed to CustomTabsTrigger */}
               <span className="hidden sm:inline">Subject Selection</span>
               <span className="sm:hidden">Subjects</span>
-            </TabsTrigger>
-            <TabsTrigger value="eligibility" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4">
+            </CustomTabsTrigger>
+            <CustomTabsTrigger value="eligibility" className="text-sm sm:text-lg py-2 sm:py-3 px-2 sm:px-4"> {/* Changed to CustomTabsTrigger */}
               <span className="hidden sm:inline">Eligibility & Rules</span>
               <span className="sm:hidden">Rules</span>
-            </TabsTrigger>
-          </TabsList>
+            </CustomTabsTrigger>
+          </CustomTabsList>
 
-          <TabsContent value="guide" className="space-y-6">
+          <CustomTabsContent value="guide" className="space-y-6"> {/* Changed to CustomTabsContent */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {examGuideSteps.map((step, index) => {
                 const Icon = step.icon;
@@ -252,8 +327,8 @@ export default function Home() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <Card className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
-                      <CardHeader>
+                    <CustomCard className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500"> {/* Changed to CustomCard */}
+                      <CustomCardHeader> {/* Changed to CustomCardHeader */}
                         <div className="flex items-center space-x-3 mb-2">
                           <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                             <Icon className="w-5 h-5 text-blue-600" />
@@ -262,29 +337,29 @@ export default function Home() {
                             Step {step.step}
                           </span>
                         </div>
-                        <CardTitle className="text-lg">{step.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
+                        <CustomCardTitle className="text-lg">{step.title}</CustomCardTitle> {/* Changed to CustomCardTitle */}
+                      </CustomCardHeader>
+                      <CustomCardContent> {/* Changed to CustomCardContent */}
                         <p className="text-slate-600 dark:text-slate-400">{step.description}</p>
-                      </CardContent>
-                    </Card>
+                      </CustomCardContent>
+                    </CustomCard>
                   </motion.div>
                 );
               })}
             </div>
-          </TabsContent>
+          </CustomTabsContent>
 
-          <TabsContent value="subjects" className="space-y-8">
+          <CustomTabsContent value="subjects" className="space-y-8"> {/* Changed to CustomTabsContent */}
             <div className="grid md:grid-cols-2 gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
+              <CustomCard> {/* Changed to CustomCard */}
+                <CustomCardHeader> {/* Changed to CustomCardHeader */}
+                  <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
                     <BookOpen className="w-5 h-5 text-blue-600" />
                     <span>Compulsory Subjects (600 marks)</span>
-                  </CardTitle>
-                  <CardDescription>All candidates must appear in these subjects</CardDescription>
-                </CardHeader>
-                <CardContent>
+                  </CustomCardTitle>
+                  <CustomCardDescription>All candidates must appear in these subjects</CustomCardDescription> {/* Changed to CustomCardDescription */}
+                </CustomCardHeader>
+                <CustomCardContent> {/* Changed to CustomCardContent */}
                   <ul className="space-y-3">
                     {subjectSelectionGuide.compulsory.map((subject, index) => (
                       <motion.li
@@ -299,18 +374,18 @@ export default function Home() {
                       </motion.li>
                     ))}
                   </ul>
-                </CardContent>
-              </Card>
+                </CustomCardContent>
+              </CustomCard>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
+              <CustomCard> {/* Changed to CustomCard */}
+                <CustomCardHeader> {/* Changed to CustomCardHeader */}
+                  <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
                     <Layers className="w-5 h-5 text-purple-600" />
                     <span>Optional Subjects (600 marks)</span>
-                  </CardTitle>
-                  <CardDescription>Choose subjects based on your background</CardDescription>
-                </CardHeader>
-                <CardContent>
+                  </CustomCardTitle>
+                  <CustomCardDescription>Choose subjects based on your background</CustomCardDescription> {/* Changed to CustomCardDescription */}
+                </CustomCardHeader>
+                <CustomCardContent> {/* Changed to CustomCardContent */}
                   <ul className="space-y-3">
                     {subjectSelectionGuide.optional.map((subject, index) => (
                       <motion.li
@@ -325,21 +400,21 @@ export default function Home() {
                       </motion.li>
                     ))}
                   </ul>
-                </CardContent>
-              </Card>
+                </CustomCardContent>
+              </CustomCard>
             </div>
-          </TabsContent>
+          </CustomTabsContent>
 
-          <TabsContent value="eligibility" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+          <CustomTabsContent value="eligibility" className="space-y-6"> {/* Changed to CustomTabsContent */}
+            <CustomCard> {/* Changed to CustomCard */}
+              <CustomCardHeader> {/* Changed to CustomCardHeader */}
+                <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
                   <Users className="w-5 h-5 text-green-600" />
                   <span>Eligibility Requirements</span>
-                </CardTitle>
-                <CardDescription>Basic requirements to appear in CSS examination</CardDescription>
-              </CardHeader>
-              <CardContent>
+                </CustomCardTitle>
+                <CustomCardDescription>Basic requirements to appear in CSS examination</CustomCardDescription> {/* Changed to CustomCardDescription */}
+              </CustomCardHeader>
+              <CustomCardContent> {/* Changed to CustomCardContent */}
                 <ul className="space-y-4">
                   {eligibilityRequirements.map((requirement, index) => (
                     <motion.li
@@ -354,17 +429,17 @@ export default function Home() {
                     </motion.li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
+              </CustomCardContent>
+            </CustomCard>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+            <CustomCard> {/* Changed to CustomCard */}
+              <CustomCardHeader> {/* Changed to CustomCardHeader */}
+                <CustomCardTitle className="flex items-center space-x-2"> {/* Changed to CustomCardTitle */}
                   <AlertCircle className="w-5 h-5 text-orange-600" />
                   <span>Important Rules & Regulations</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </CustomCardTitle>
+              </CustomCardHeader>
+              <CustomCardContent> {/* Changed to CustomCardContent */}
                 <div className="space-y-4 text-slate-700 dark:text-slate-300">
                   <p><strong>Application Process:</strong> Online application through FPSC website during specified period</p>
                   <p><strong>Examination Pattern:</strong> Written examination followed by psychological assessment, medical examination, and interview</p>
@@ -372,10 +447,10 @@ export default function Home() {
                   <p><strong>Attempts:</strong> Maximum 3 attempts allowed (age permitting)</p>
                   <p><strong>Medical Standards:</strong> Candidates must meet prescribed medical and physical standards</p>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </CustomCardContent>
+            </CustomCard>
+          </CustomTabsContent>
+        </CustomTabs>
       </motion.div>
 
       {/* Quick Access */}

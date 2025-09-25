@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { Toaster } from '@/components/ui/toaster';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import Compulsory from './pages/Compulsory';
@@ -10,6 +9,7 @@ import Quiz from './pages/Quiz';
 import Sessions from './pages/Sessions';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
+import CustomToastProvider from './components/CustomToastProvider'; // New import
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,7 +39,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
-            <Toaster />
+            <CustomToastProvider /> {/* Using custom toast provider */}
           </div>
         </Router>
       </ThemeProvider>

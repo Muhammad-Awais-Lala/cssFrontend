@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Home, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { CustomButton } from '@/components/CustomButton'; // Changed import
 
 export default function NotFound() {
   return (
@@ -46,21 +46,24 @@ export default function NotFound() {
           className="space-y-4"
         >
           <Link to="/home">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+            <CustomButton // Changed to CustomButton
+              size="lg" 
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               <Home className="w-5 h-5 mr-2" />
               Go to Home
-            </Button>
+            </CustomButton>
           </Link>
           
           <div>
-            <Button 
+            <CustomButton // Changed to CustomButton
               variant="outline" 
               onClick={() => window.history.back()}
               className="ml-4"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go Back
-            </Button>
+            </CustomButton>
           </div>
         </motion.div>
 

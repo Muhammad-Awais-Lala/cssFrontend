@@ -2,13 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, RotateCcw, CheckCircle, XCircle, Circle, Eye } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { useToast } from '@/components/ui/use-toast';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { CustomButton } from '@/components/CustomButton'; // Changed import
+import { useCustomToast } from '@/hooks/useCustomToast'; // Changed import
 import Breadcrumbs from '../components/Breadcrumbs';
 import { MCQLoadingSkeleton } from '../components/LoadingSkeleton';
 import ConfettiAnimation from '../components/ConfettiAnimation';
@@ -30,10 +25,96 @@ interface UserAnswer {
   selectedOptionIndex: number | null;
 }
 
+// Placeholder for Progress component
+const CustomProgress = ({ value, className }: { value: number; className?: string }) => (
+  <div className={`w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 ${className}`}>
+    <div
+      className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out"
+      style={{ width: `${value}%` }}
+    ></div>
+  </div>
+);
+
+// Placeholder for RadioGroup and Label components
+const CustomRadioGroup = ({ value, onValueChange, disabled, children }: { value: string; onValueChange: (value: string) => void; disabled?: boolean; children: React.ReactNode }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!disabled) {
+      onValueChange(e.target.value);
+    }
+  };
+  return <div role="radiogroup" className="space-y-3" onChange={handleChange}>{children}</div>;
+};
+
+const CustomRadioGroupItem = ({ value, id, disabled }: { value: string; id: string; disabled?: boolean }) => (
+  <input
+    type="radio"
+    id={id}
+    name="radio-group" // All items in a group should have the same name
+    value={value}
+    disabled={disabled}
+    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-slate-700"
+  />
+);
+
+const CustomLabel = ({ htmlFor, children, className }: { htmlFor: string; children: React.ReactNode; className?: string }) => (
+  <label htmlFor={htmlFor} className={`cursor-pointer ${className}`}>
+    {children}
+  </label>
+);
+
+// Placeholder for Card components (already defined in Home.tsx, but re-defining for clarity here)
+const CustomCard = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 ${className}`}>
+    {children}
+  </div>
+);
+const CustomCardHeader = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <div className={`p-6 pb-2 ${className}`}>
+    {children}
+  </div>
+);
+const CustomCardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <h3 className={`text-lg font-semibold text-slate-900 dark:text-white ${className}`}>
+    {children}
+  </h3>
+);
+const CustomCardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <div className={`p-6 pt-0 ${className}`}>
+    {children}
+  </div>
+);
+
+// Placeholder for Collapsible component
+const CustomCollapsible = ({ open, onOpenChange, children }: { open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }) => {
+  const childrenArray = React.Children.toArray(children);
+  const trigger = childrenArray.find(child => React.isValidElement(child) && child.type === CustomCollapsibleTrigger);
+  const content = childrenArray.find(child => React.isValidElement(child) && child.type === CustomCollapsibleContent);
+
+  return (
+    <div>
+      {React.isValidElement(trigger) && React.cloneElement(trigger, { onClick: () => onOpenChange(!open) })}
+      {open && React.isValidElement(content) && content}
+    </div>
+  );
+};
+
+const CustomCollapsibleTrigger = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
+  <div onClick={onClick} className="cursor-pointer">
+    {children}
+  </div>
+);
+
+const CustomCollapsibleContent = ({ children }: { children: React.ReactNode }) => (
+  <div>
+    {children}
+  </div>
+);
+
+
 export default function Quiz() {
   const { subjectSlug } = useParams<{ subjectSlug: string }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast } = useCustomToast(); // Changed to useCustomToast
   
   const [mcqData, setMcqData] = useState<MCQResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,11 +150,7 @@ export default function Quiz() {
       })));
     } catch (error) {
       console.error('Failed to fetch MCQs:', error);
-      toast({
-        title: "Error",
-        description: "Failed to generate MCQs. The service might not be working. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to generate MCQs. The service might not be working. Please try again."); // Changed to custom toast
     } finally {
       setLoading(false);
     }
@@ -186,14 +263,14 @@ export default function Quiz() {
           <p className="text-slate-600 dark:text-slate-400 mb-6">
             The service might not be working. Please try again.
           </p>
-          <Button onClick={fetchMCQs} className="mr-4">
+          <CustomButton onClick={fetchMCQs} className="mr-4"> {/* Changed to CustomButton */}
             <RotateCcw className="w-4 h-4 mr-2" />
             Retry
-          </Button>
-          <Button variant="outline" onClick={() => navigate(-1)}>
+          </CustomButton>
+          <CustomButton variant="outline" onClick={() => navigate(-1)}> {/* Changed to CustomButton */}
             <ChevronLeft className="w-4 h-4 mr-2" />
             Go Back
-          </Button>
+          </CustomButton>
         </div>
       </div>
     );
@@ -219,10 +296,10 @@ export default function Quiz() {
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
               {subjectName}
             </h1>
-            <Button variant="outline" onClick={() => navigate(-1)}>
+            <CustomButton variant="outline" onClick={() => navigate(-1)}> {/* Changed to CustomButton */}
               <ChevronLeft className="w-4 h-4 mr-2" />
               Back
-            </Button>
+            </CustomButton>
           </div>
           
           <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
@@ -230,7 +307,7 @@ export default function Quiz() {
             <span>{Math.round((getAnsweredCount() / 15) * 100)}% complete</span>
           </div>
           
-          <Progress value={(getAnsweredCount() / 15) * 100} className="h-2" />
+          <CustomProgress value={(getAnsweredCount() / 15) * 100} className="h-2" /> {/* Changed to CustomProgress */}
         </div>
 
         {/* Questions */}
@@ -276,7 +353,7 @@ export default function Quiz() {
                       {question.statement}
                     </h3>
                     
-                    <RadioGroup
+                    <CustomRadioGroup // Changed to CustomRadioGroup
                       value={userAnswer.selectedOptionIndex?.toString() || ''}
                       onValueChange={(value) => handleAnswerChange(question.id, parseInt(value))}
                       disabled={showResults}
@@ -294,17 +371,17 @@ export default function Quiz() {
                           
                           return (
                             <div key={optionIndex} className={`flex items-center space-x-3 p-2 rounded-lg border transition-colors ${optionStyle || 'border-transparent'}`}>
-                              <RadioGroupItem 
+                              <CustomRadioGroupItem // Changed to CustomRadioGroupItem
                                 value={optionIndex.toString()} 
                                 id={`q${question.id}-option${optionIndex}`}
                                 disabled={showResults}
                               />
-                              <Label 
+                              <CustomLabel // Changed to CustomLabel
                                 htmlFor={`q${question.id}-option${optionIndex}`}
                                 className="flex-1 cursor-pointer text-slate-700 dark:text-slate-300"
                               >
                                 {option}
-                              </Label>
+                              </CustomLabel>
                               {showResults && optionIndex === question.correctOptionIndex && (
                                 <CheckCircle className="w-4 h-4 text-green-600" />
                               )}
@@ -315,7 +392,7 @@ export default function Quiz() {
                           );
                         })}
                       </div>
-                    </RadioGroup>
+                    </CustomRadioGroup>
                   </div>
                 </div>
               </motion.div>
@@ -326,24 +403,24 @@ export default function Quiz() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {!showResults ? (
-            <Button 
+            <CustomButton // Changed to CustomButton
               onClick={generateResults}
               size="lg"
               className="bg-blue-600 hover:bg-blue-700 text-white px-8"
             >
               Generate Results
-            </Button>
+            </CustomButton>
           ) : (
-            <Button 
+            <CustomButton // Changed to CustomButton
               onClick={handleNext}
               size="lg"
               className="bg-green-600 hover:bg-green-700 text-white px-8"
             >
               Next Set of MCQs
-            </Button>
+            </CustomButton>
           )}
           
-          <Button 
+          <CustomButton // Changed to CustomButton
             variant="outline" 
             onClick={fetchMCQs}
             size="lg"
@@ -351,10 +428,10 @@ export default function Quiz() {
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Retry
-          </Button>
+          </CustomButton>
 
           {showResults && (
-            <Button 
+            <CustomButton // Changed to CustomButton
               variant="outline" 
               onClick={() => setShowCorrectAnswers(!showCorrectAnswers)}
               size="lg"
@@ -362,7 +439,7 @@ export default function Quiz() {
             >
               <Eye className="w-4 h-4 mr-2" />
               {showCorrectAnswers ? 'Hide' : 'Show'} All Correct Answers
-            </Button>
+            </CustomButton>
           )}
         </div>
 
@@ -432,20 +509,20 @@ export default function Quiz() {
               </div>
 
               {/* All Correct Answers Section */}
-              <Collapsible open={showCorrectAnswers} onOpenChange={setShowCorrectAnswers}>
-                <CollapsibleTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
+              <CustomCollapsible open={showCorrectAnswers} onOpenChange={setShowCorrectAnswers}> {/* Changed to CustomCollapsible */}
+                <CustomCollapsibleTrigger> {/* Changed to CustomCollapsibleTrigger */}
+                  <CustomCard className="cursor-pointer hover:shadow-md transition-shadow"> {/* Changed to CustomCard */}
+                    <CustomCardHeader> {/* Changed to CustomCardHeader */}
+                      <CustomCardTitle className="flex items-center justify-between"> {/* Changed to CustomCardTitle */}
                         <span>All Correct Answers</span>
                         <Eye className="w-5 h-5" />
-                      </CardTitle>
-                    </CardHeader>
-                  </Card>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <Card>
-                    <CardContent className="pt-6">
+                      </CustomCardTitle>
+                    </CustomCardHeader>
+                  </CustomCard>
+                </CustomCollapsibleTrigger>
+                <CustomCollapsibleContent> {/* Changed to CustomCollapsibleContent */}
+                  <CustomCard> {/* Changed to CustomCard */}
+                    <CustomCardContent className="pt-6"> {/* Changed to CustomCardContent */}
                       <div className="space-y-4">
                         {mcqData.questions.map((question, index) => (
                           <div key={question.id} className="border-l-4 border-l-blue-500 pl-4 py-2">
@@ -474,10 +551,10 @@ export default function Quiz() {
                           </div>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                </CollapsibleContent>
-              </Collapsible>
+                    </CustomCardContent>
+                  </CustomCard>
+                </CustomCollapsibleContent>
+              </CustomCollapsible>
             </motion.div>
           )}
         </AnimatePresence>
