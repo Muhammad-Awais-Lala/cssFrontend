@@ -28,19 +28,21 @@ interface CustomTabsListProps extends React.HTMLAttributes<HTMLDivElement> {
   setActiveTab?: (tab: string) => void;
 }
 
-const CustomTabsList = ({ children, className, activeTab, setActiveTab, ...props }: CustomTabsListProps) => (
-  <div className
-    ref={ref}
-    className={cn(
-      "flex justify-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 mb-4",
-      className
-    )}
-    {...props}
-  >
-    {React.Children.map(children, child => 
-      React.isValidElement(child) && React.cloneElement(child, { activeTab, setActiveTab })
-    )}
-  </div>
+const CustomTabsList = React.forwardRef<HTMLDivElement, CustomTabsListProps>(
+  ({ children, className, activeTab, setActiveTab, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "flex justify-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 mb-4",
+        className
+      )}
+      {...props}
+    >
+      {React.Children.map(children, child => 
+        React.isValidElement(child) && React.cloneElement(child, { activeTab, setActiveTab })
+      )}
+    </div>
+  )
 );
 CustomTabsList.displayName = "CustomTabsList";
 
