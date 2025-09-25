@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import CustomToastProvider from './components/CustomToastProvider';
 import Footer from './components/Footer';
+// import './index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +40,10 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+                {/* Tailwind CSS Test Element */}
+                <div className="bg-green-500 text-white p-4 rounded-lg text-center mt-4">
+                  Tailwind CSS is working!
+                </div>
             </main>
             <CustomToastProvider />
             <Footer />
