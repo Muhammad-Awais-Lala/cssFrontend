@@ -2,13 +2,21 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, RotateCcw, CheckCircle, XCircle, Circle, Eye } from 'lucide-react';
-import { CustomButton } from '@/components/CustomButton'; // Changed import
-import { useCustomToast } from '@/hooks/useCustomToast'; // Changed import
+import { CustomButton } from '@/components/CustomButton';
+import { useCustomToast } from '@/hooks/useCustomToast';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { MCQLoadingSkeleton } from '../components/LoadingSkeleton';
 import ConfettiAnimation from '../components/ConfettiAnimation';
-import backend from '~backend/client';
-import type { MCQResponse } from '~backend/mcq/generate';
+
+// Mock data structure for MCQ response
+interface MCQResponse {
+  questions: Array<{
+    id: number;
+    statement: string;
+    options: string[];
+    correctOptionIndex: number;
+  }>;
+}
 
 interface QuizResult {
   right: number[];
@@ -110,11 +118,31 @@ const CustomCollapsibleContent = ({ children }: { children: React.ReactNode }) =
   </div>
 );
 
+// Mock backend client for demonstration
+const mockBackend = {
+  mcq: {
+    generate: async ({ subject, count, difficulty, pakistanOnly, pakistanOnlyStrict }: any): Promise<MCQResponse> => {
+      console.log("Mock MCQ generation called with:", { subject, count, difficulty, pakistanOnly, pakistanOnlyStrict });
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const mockQuestions: MCQResponse['questions'] = Array.from({ length: count }).map((_, i) => ({
+        id: i + 1,
+        statement: `This is a mock question about ${subject} number ${i + 1}. What is the capital of Pakistan?`,
+        options: ['Lahore', 'Karachi', 'Islamabad', 'Peshawar'],
+        correctOptionIndex: 2, // Islamabad
+      }));
+
+      return { questions: mockQuestions };
+    },
+  },
+};
+
 
 export default function Quiz() {
   const { subjectSlug } = useParams<{ subjectSlug: string }>();
   const navigate = useNavigate();
-  const { toast } = useCustomToast(); // Changed to useCustomToast
+  const { toast } = useCustomToast();
   
   const [mcqData, setMcqData] = useState<MCQResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -135,7 +163,8 @@ export default function Quiz() {
     setShowCorrectAnswers(false);
     
     try {
-      const response = await backend.mcq.generate({
+      // Using mockBackend instead of actual backend
+      const response = await mockBackend.mcq.generate({
         subject: subjectName,
         count: 15,
         difficulty: 'Medium',
@@ -150,7 +179,7 @@ export default function Quiz() {
       })));
     } catch (error) {
       console.error('Failed to fetch MCQs:', error);
-      toast.error("Failed to generate MCQs. The service might not be working. Please try again."); // Changed to custom toast
+      toast.error("Failed to generate MCQs. The service might not be working. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -263,11 +292,11 @@ export default function Quiz() {
           <p className="text-slate-600 dark:text-slate-400 mb-6">
             The service might not be working. Please try again.
           </p>
-          <CustomButton onClick={fetchMCQs} className="mr-4"> {/* Changed to CustomButton */}
+          <CustomButton onClick={fetchMCQs} className="mr-4">
             <RotateCcw className="w-4 h-4 mr-2" />
             Retry
           </CustomButton>
-          <CustomButton variant="outline" onClick={() => navigate(-1)}> {/* Changed to CustomButton */}
+          <CustomButton variant="outline" onClick={() => navigate(-1)}>
             <ChevronLeft className="w-4 h-4 mr-2" />
             Go Back
           </CustomButton>
@@ -296,7 +325,7 @@ export default function Quiz() {
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
               {subjectName}
             </h1>
-            <CustomButton variant="outline" onClick={() => navigate(-1)}> {/* Changed to CustomButton */}
+            <CustomButton variant="outline" onClick={() => navigate(-1)}>
               <ChevronLeft className="w-4 h-4 mr-2" />
               Back
             </CustomButton>
@@ -307,7 +336,7 @@ export default function Quiz() {
             <span>{Math.round((getAnsweredCount() / 15) * 100)}% complete</span>
           </div>
           
-          <CustomProgress value={(getAnsweredCount() / 15) * 100} className="h-2" /> {/* Changed to CustomProgress */}
+          <CustomProgress value={(getAnsweredCount() / 15) * 100} className="h-2" />
         </div>
 
         {/* Questions */}
@@ -353,7 +382,7 @@ export default function Quiz() {
                       {question.statement}
                     </h3>
                     
-                    <CustomRadioGroup // Changed to CustomRadioGroup
+                    <CustomRadioGroup
                       value={userAnswer.selectedOptionIndex?.toString() || ''}
                       onValueChange={(value) => handleAnswerChange(question.id, parseInt(value))}
                       disabled={showResults}
@@ -371,12 +400,12 @@ export default function Quiz() {
                           
                           return (
                             <div key={optionIndex} className={`flex items-center space-x-3 p-2 rounded-lg border transition-colors ${optionStyle || 'border-transparent'}`}>
-                              <CustomRadioGroupItem // Changed to CustomRadioGroupItem
+                              <CustomRadioGroupItem
                                 value={optionIndex.toString()} 
                                 id={`q${question.id}-option${optionIndex}`}
                                 disabled={showResults}
                               />
-                              <CustomLabel // Changed to CustomLabel
+                              <CustomLabel
                                 htmlFor={`q${question.id}-option${optionIndex}`}
                                 className="flex-1 cursor-pointer text-slate-700 dark:text-slate-300"
                               >
@@ -403,7 +432,7 @@ export default function Quiz() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {!showResults ? (
-            <CustomButton // Changed to CustomButton
+            <CustomButton
               onClick={generateResults}
               size="lg"
               className="bg-blue-600 hover:bg-blue-700 text-white px-8"
@@ -411,7 +440,7 @@ export default function Quiz() {
               Generate Results
             </CustomButton>
           ) : (
-            <CustomButton // Changed to CustomButton
+            <CustomButton
               onClick={handleNext}
               size="lg"
               className="bg-green-600 hover:bg-green-700 text-white px-8"
@@ -420,7 +449,7 @@ export default function Quiz() {
             </CustomButton>
           )}
           
-          <CustomButton // Changed to CustomButton
+          <CustomButton
             variant="outline" 
             onClick={fetchMCQs}
             size="lg"
@@ -431,7 +460,7 @@ export default function Quiz() {
           </CustomButton>
 
           {showResults && (
-            <CustomButton // Changed to CustomButton
+            <CustomButton
               variant="outline" 
               onClick={() => setShowCorrectAnswers(!showCorrectAnswers)}
               size="lg"
@@ -509,20 +538,20 @@ export default function Quiz() {
               </div>
 
               {/* All Correct Answers Section */}
-              <CustomCollapsible open={showCorrectAnswers} onOpenChange={setShowCorrectAnswers}> {/* Changed to CustomCollapsible */}
-                <CustomCollapsibleTrigger> {/* Changed to CustomCollapsibleTrigger */}
-                  <CustomCard className="cursor-pointer hover:shadow-md transition-shadow"> {/* Changed to CustomCard */}
-                    <CustomCardHeader> {/* Changed to CustomCardHeader */}
-                      <CustomCardTitle className="flex items-center justify-between"> {/* Changed to CustomCardTitle */}
+              <CustomCollapsible open={showCorrectAnswers} onOpenChange={setShowCorrectAnswers}>
+                <CustomCollapsibleTrigger>
+                  <CustomCard className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CustomCardHeader>
+                      <CustomCardTitle className="flex items-center justify-between">
                         <span>All Correct Answers</span>
                         <Eye className="w-5 h-5" />
                       </CustomCardTitle>
                     </CustomCardHeader>
                   </CustomCard>
                 </CustomCollapsibleTrigger>
-                <CustomCollapsibleContent> {/* Changed to CustomCollapsibleContent */}
-                  <CustomCard> {/* Changed to CustomCard */}
-                    <CustomCardContent className="pt-6"> {/* Changed to CustomCardContent */}
+                <CustomCollapsibleContent>
+                  <CustomCard>
+                    <CustomCardContent className="pt-6">
                       <div className="space-y-4">
                         {mcqData.questions.map((question, index) => (
                           <div key={question.id} className="border-l-4 border-l-blue-500 pl-4 py-2">
