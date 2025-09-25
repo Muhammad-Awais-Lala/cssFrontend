@@ -27,7 +27,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Router>
-          <div className="min-h-screen bg-red-500 dark:bg-red-900 transition-colors duration-300 flex flex-col"> {/* Added bg-red-500 for testing */}
+          <div className="min-h-screen bg-background dark:bg-slate-900 transition-colors duration-300 flex flex-col"> {/* Changed bg-red-500 to bg-background */}
             <Navigation />
             <main className="flex-grow pt-16">
               <Routes>
@@ -41,9 +41,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
                 {/* Tailwind CSS Test Element */}
-                <div className="bg-green-500 text-white p-4 rounded-lg text-center mt-4">
-                  Tailwind CSS is working!
-                </div>
+                {/* Removed the temporary Tailwind CSS test element */}
             </main>
             <CustomToastProvider />
             <Footer />
