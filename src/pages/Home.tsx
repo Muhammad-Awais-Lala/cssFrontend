@@ -164,11 +164,11 @@ export default function Home() {
         transition={{ duration: 0.8, delay: 0.8 }}
         className="grid md:grid-cols-2 gap-8 mb-20"
       >
-        <Link to="/compulsory">
+        <Link to="/compulsory" className="contents">
           <motion.div
             whileHover={{ scale: 1.03, y: -8 }}
             whileTap={{ scale: 0.98 }}
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-10 text-white shadow-2xl cursor-pointer group"
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-10 text-white shadow-2xl cursor-pointer group h-full min-h-[320px]"
           >
             <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
             <motion.div
@@ -176,13 +176,13 @@ export default function Home() {
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             />
-            <div className="relative z-10">
+            <div className="relative z-10 flex h-full flex-col">
               <BookOpen className="w-16 h-16 mb-6 group-hover:scale-110 transition-transform duration-300" />
               <h2 className="text-3xl font-bold mb-4">Compulsory Subjects</h2>
               <p className="text-blue-100 mb-6 text-lg">
                 Master the six core subjects required for all CSS candidates with Pakistan-focused content
               </p>
-              <div className="flex items-center text-blue-100 group-hover:text-white transition-colors">
+              <div className="mt-auto flex items-center text-blue-100 group-hover:text-white transition-colors">
                 <span className="text-lg font-medium">Start Practicing</span>
                 <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
               </div>
@@ -190,11 +190,11 @@ export default function Home() {
           </motion.div>
         </Link>
 
-        <Link to="/optional">
+        <Link to="/optional" className="contents">
           <motion.div
             whileHover={{ scale: 1.03, y: -8 }}
             whileTap={{ scale: 0.98 }}
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-500 via-purple-600 to-pink-700 p-10 text-white shadow-2xl cursor-pointer group"
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-500 via-purple-600 to-pink-700 p-10 text-white shadow-2xl cursor-pointer group h-full min-h-[320px]"
           >
             <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
             <motion.div
@@ -202,13 +202,13 @@ export default function Home() {
               animate={{ rotate: -360 }}
               transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
             />
-            <div className="relative z-10">
+            <div className="relative z-10 flex h-full flex-col">
               <Layers className="w-16 h-16 mb-6 group-hover:scale-110 transition-transform duration-300" />
               <h2 className="text-3xl font-bold mb-4">Optional Subjects</h2>
               <p className="text-purple-100 mb-6 text-lg">
                 Choose from 7 specialized groups covering diverse academic disciplines
               </p>
-              <div className="flex items-center text-purple-100 group-hover:text-white transition-colors">
+              <div className="mt-auto flex items-center text-purple-100 group-hover:text-white transition-colors">
                 <span className="text-lg font-medium">Explore Groups</span>
                 <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
               </div>
@@ -260,7 +260,7 @@ export default function Home() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <CustomCard className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
+                    <CustomCard className="h-full hover:shadow-lg transition-all duration-300">
                       <CustomCardHeader>
                         <div className="flex items-center space-x-3 mb-2">
                           <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
@@ -284,7 +284,7 @@ export default function Home() {
 
           <CustomTabsContent value="subjects" className="space-y-8">
             <div className="grid md:grid-cols-2 gap-8">
-              <CustomCard>
+              <CustomCard className="h-full">
                 <CustomCardHeader>
                   <CustomCardTitle className="flex items-center space-x-2">
                     <BookOpen className="w-5 h-5 text-blue-600" />
@@ -310,7 +310,7 @@ export default function Home() {
                 </CustomCardContent>
               </CustomCard>
 
-              <CustomCard>
+              <CustomCard className="h-full">
                 <CustomCardHeader>
                   <CustomCardTitle className="flex items-center space-x-2">
                     <Layers className="w-5 h-5 text-purple-600" />
@@ -339,7 +339,7 @@ export default function Home() {
           </CustomTabsContent>
 
           <CustomTabsContent value="eligibility" className="space-y-6">
-            <CustomCard>
+            <CustomCard className="h-full">
               <CustomCardHeader>
                 <CustomCardTitle className="flex items-center space-x-2">
                   <Users className="w-5 h-5 text-green-600" />
@@ -365,7 +365,7 @@ export default function Home() {
                 </CustomCardContent>
               </CustomCard>
 
-              <CustomCard>
+              <CustomCard className="h-full">
                 <CustomCardHeader>
                   <CustomCardTitle className="flex items-center space-x-2">
                     <AlertCircle className="w-5 h-5 text-orange-600" />
@@ -430,7 +430,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 1.4 + index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300"
+                className="text-center p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                   <Icon className="w-8 h-8 text-white" />

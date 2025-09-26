@@ -1,28 +1,40 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, BookOpen, Layers, Clock, Settings, Sun, Moon, Monitor } from 'lucide-react';
+import { Menu, Home, BookOpen, Layers, Clock, Settings, Sun, Moon } from 'lucide-react';
 import { CustomButton } from '@/components/CustomButton';
 import { useTheme } from '../contexts/ThemeContext';
 import { motion } from 'framer-motion';
 import { CustomSheet, CustomSheetTrigger, CustomSheetContent, CustomSheetHeader, CustomSheetTitle } from '@/components/CustomSheet'; // Updated import
 
 // Custom DropdownMenu implementation
-const CustomDropdownMenu = ({ children, trigger, content }: { children: React.ReactNode, trigger: React.ReactNode, content: React.ReactNode }) => {
+const CustomDropdownMenu = ({ children, trigger, onClose }: { children: React.ReactNode, trigger: React.ReactNode, onClose?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    onClose?.();
+  };
 
   return (
     <div className="relative">
       <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-        >
-          {children} {/* Render children directly as content */}
-        </motion.div>
+        <>
+          {/* Backdrop to close dropdown when clicking outside */}
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={handleClose}
+          />
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-20"
+          >
+            {children}
+          </motion.div>
+        </>
       )}
     </div>
   );
@@ -41,12 +53,11 @@ export default function Navigation() {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
 
-  const ThemeIcon = theme === 'light' ? Sun : theme === 'dark' ? Moon : Monitor;
+  const ThemeIcon = theme === 'light' ? Sun : Moon;
 
   const themeOptions = [
     { value: 'light', label: 'Light', icon: Sun },
     { value: 'dark', label: 'Dark', icon: Moon },
-    { value: 'system', label: 'System', icon: Monitor },
   ];
 
   return (
@@ -118,7 +129,6 @@ export default function Navigation() {
                       className="w-full justify-start text-sm px-4 py-2"
                       onClick={() => {
                         setTheme(option.value as any);
-                        setIsOpen(false); // Close dropdown after selection
                       }}
                     >
                       <Icon className="w-4 h-4 mr-2" />

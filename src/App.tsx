@@ -11,7 +11,7 @@ import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import CustomToastProvider from './components/CustomToastProvider';
 import Footer from './components/Footer';
-// import './index.css';
+import './index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,7 +27,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Router>
-          <div className="min-h-screen bg-background text-primary transition-colors duration-300 flex flex-col">
+          <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300 flex flex-col">
             <Navigation />
             <main className="flex-grow pt-16">
               <Routes>

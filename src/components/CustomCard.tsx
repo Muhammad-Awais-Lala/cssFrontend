@@ -8,7 +8,7 @@ const CustomCard = React.forwardRef<HTMLDivElement, CustomCardProps>(
     <div
       ref={ref}
       className={cn(
-        "rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700",
+        "rounded-xl bg-white dark:bg-slate-800 shadow-sm flex flex-col h-full",
         className
       )}
       {...props}
@@ -62,7 +62,7 @@ const CustomCardContent = React.forwardRef<HTMLDivElement, CustomCardContentProp
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("p-6 pt-0", className)}
+      className={cn("p-6 pt-0 flex-1", className)}
       {...props}
     />
   )

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Moon, Monitor, Trash2, Shield, Info, User, ExternalLink, XCircle } from 'lucide-react';
+import { Sun, Moon, Trash2, Shield, Info, User, ExternalLink, XCircle } from 'lucide-react';
 import { CustomButton } from '@/components/CustomButton';
 import { useCustomToast } from '@/hooks/useCustomToast';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -36,7 +36,6 @@ export default function Settings() {
   const themeOptions = [
     { value: 'light', label: 'Light', icon: Sun },
     { value: 'dark', label: 'Dark', icon: Moon },
-    { value: 'system', label: 'System', icon: Monitor },
   ];
 
   return (
@@ -70,13 +69,13 @@ export default function Settings() {
               </CustomCardDescription>
             </CustomCardHeader>
             <CustomCardContent>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {themeOptions.map((option) => {
                   const Icon = option.icon;
                   return (
                     <CustomButton
                       key={option.value}
-                      variant={theme === option.value ? "default" : "outline"}
+                      variant={theme === option.value ? "outline" : "default"}
                       className="h-20 flex flex-col items-center justify-center space-y-2"
                       onClick={() => setTheme(option.value as any)}
                     >

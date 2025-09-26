@@ -22,7 +22,7 @@ export default function SubjectCard({
     <motion.div
       whileHover={disabled ? {} : { scale: 1.02, y: -2 }}
       whileTap={disabled ? {} : { scale: 0.98 }}
-      className={`relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 ${
+      className={`relative overflow-hidden rounded-xl bg-surface shadow-lg border border-accent ${
         disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-xl'
       } transition-all duration-300`}
       onClick={disabled ? undefined : onClick}

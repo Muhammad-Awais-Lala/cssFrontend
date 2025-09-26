@@ -44,10 +44,10 @@ const compulsorySubjects = [
     gradient: 'from-emerald-500 to-emerald-600',
   },
   {
-    name: 'Islamic Studies / Comparative Religion',
+    name: 'Islamic Studies',
     slug: 'islamic-studies',
     icon: Star,
-    description: 'Islamic principles and comparative religious studies',
+    description: 'Islamic principles and religious studies',
     gradient: 'from-teal-500 to-teal-600',
   },
 ];
