@@ -7,21 +7,27 @@ import { useCustomToast } from '@/hooks/useCustomToast';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { MCQLoadingSkeleton } from '../components/LoadingSkeleton';
 import ConfettiAnimation from '../components/ConfettiAnimation';
-import React from 'react';
 import { CustomProgress } from '@/components/CustomProgress'; // Updated import
 import { CustomRadioGroup, CustomRadioGroupItem } from '@/components/CustomRadioGroup'; // Updated import
 import { CustomLabel } from '@/components/CustomForm'; // Re-using CustomLabel from CustomForm
 import { CustomCard, CustomCardHeader, CustomCardTitle, CustomCardContent } from '@/components/CustomCard'; // Re-using CustomCard
 import { CustomCollapsible, CustomCollapsibleTrigger, CustomCollapsibleContent } from '@/components/CustomCollapsible'; // Updated import
+import apiClient from '@/lib/axios';
 
-// Mock data structure for MCQ response
+// API response structures
+interface MCQQuestion {
+  id: number;
+  statement: string;
+  options: string[];
+  correctOptionIndex: number;
+}
+
 interface MCQResponse {
-  questions: Array<{
-    id: number;
-    statement: string;
-    options: string[];
-    correctOptionIndex: number;
-  }>;
+  subject?: string;
+  group?: string;
+  count?: number;
+  pakistanOnly?: boolean;
+  questions: MCQQuestion[];
 }
 
 interface QuizResult {
@@ -38,27 +44,6 @@ interface UserAnswer {
   questionId: number;
   selectedOptionIndex: number | null;
 }
-
-// Mock backend client for demonstration
-const mockBackend = {
-  mcq: {
-    generate: async ({ subject, count, difficulty, pakistanOnly, pakistanOnlyStrict }: any): Promise<MCQResponse> => {
-      console.log("Mock MCQ generation called with:", { subject, count, difficulty, pakistanOnly, pakistanOnlyStrict });
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const mockQuestions: MCQResponse['questions'] = Array.from({ length: count }).map((_, i) => ({
-        id: i + 1,
-        statement: `This is a mock question about ${subject} number ${i + 1}. What is the capital of Pakistan?`,
-        options: ['Lahore', 'Karachi', 'Islamabad', 'Peshawar'],
-        correctOptionIndex: 2, // Islamabad
-      }));
-
-      return { questions: mockQuestions };
-    },
-  },
-};
-
 
 export default function Quiz() {
   const { subjectSlug } = useParams<{ subjectSlug: string }>();
@@ -84,23 +69,20 @@ export default function Quiz() {
     setShowCorrectAnswers(false);
     
     try {
-      // Using mockBackend instead of actual backend
-      const response = await mockBackend.mcq.generate({
+      const { data } = await apiClient.post<MCQResponse>('/api/mcqs/generate-mcqs', {
         subject: subjectName,
         count: 15,
         difficulty: 'Medium',
         pakistanOnly: true,
-        pakistanOnlyStrict: true,
       });
-      
-      setMcqData(response);
-      setUserAnswers(Array.from({ length: 15 }, (_, i) => ({ 
-        questionId: i + 1, 
-        selectedOptionIndex: null 
-      })));
+
+      const questions = data.questions ?? [];
+      setMcqData({ ...data, questions });
+      setUserAnswers(questions.map(q => ({ questionId: q.id, selectedOptionIndex: null })));
     } catch (error) {
       console.error('Failed to fetch MCQs:', error);
-      toast.error("Failed to generate MCQs. The service might not be working. Please try again.");
+      toast.error('Failed to generate MCQs. Please try again.');
+      setMcqData(null);
     } finally {
       setLoading(false);
     }
@@ -127,11 +109,13 @@ export default function Quiz() {
     const wrong: number[] = [];
     const empty: number[] = [];
 
-    userAnswers.forEach((answer, index) => {
-      const question = mcqData.questions[index];
-      if (answer.selectedOptionIndex === null) {
+    userAnswers.forEach((answer) => {
+      const question = mcqData.questions.find(q => q.id === answer.questionId);
+      if (!question || answer.selectedOptionIndex === null) {
         empty.push(answer.questionId);
-      } else if (answer.selectedOptionIndex === question.correctOptionIndex) {
+        return;
+      }
+      if (answer.selectedOptionIndex === question.correctOptionIndex) {
         right.push(answer.questionId);
       } else {
         wrong.push(answer.questionId);
@@ -154,16 +138,13 @@ export default function Quiz() {
     setResults(result);
     setShowResults(true);
 
-    // Show confetti if score is good
-    if (right.length >= 10) {
+    if (right.length >= Math.ceil((mcqData.questions.length || 1) * 0.66)) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
     }
 
-    // Save to localStorage
     const sessions = JSON.parse(localStorage.getItem('quiz-sessions') || '[]');
     sessions.unshift(result);
-    // Keep only last 20 sessions
     if (sessions.length > 20) {
       sessions.splice(20);
     }
@@ -180,12 +161,14 @@ export default function Quiz() {
 
   const getQuestionStatus = (questionIndex: number) => {
     if (!showResults || !results || !mcqData) return 'unanswered';
-    
-    const questionId = questionIndex + 1;
+    const questionId = mcqData.questions[questionIndex]?.id;
+    if (questionId == null) return 'unanswered';
     if (results.right.includes(questionId)) return 'correct';
     if (results.wrong.includes(questionId)) return 'wrong';
     return 'empty';
   };
+
+  const totalQuestions = mcqData?.questions.length ?? 15;
 
   if (loading) {
     return (
@@ -242,7 +225,7 @@ export default function Quiz() {
       >
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="sticky top-16 z-30 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between mb-4 py-3 px-1 -mx-1">
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
               {subjectName}
             </h1>
@@ -251,20 +234,20 @@ export default function Quiz() {
               Back
             </CustomButton>
           </div>
-          
-          <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
-            <span>Progress: {getAnsweredCount()} of 15 questions</span>
-            <span>{Math.round((getAnsweredCount() / 15) * 100)}% complete</span>
+          <div className="sticky top-[calc(4rem+48px)] z-20 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2">
+            <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
+              <span>Progress: {getAnsweredCount()} of {totalQuestions} questions</span>
+              <span>{Math.round((getAnsweredCount() / totalQuestions) * 100)}% complete</span>
+            </div>
+            <CustomProgress value={(getAnsweredCount() / totalQuestions) * 100} className="h-2" />
           </div>
-          
-          <CustomProgress value={(getAnsweredCount() / 15) * 100} className="h-2" />
         </div>
 
         {/* Questions */}
         <div className="space-y-6 mb-8">
           {mcqData.questions.map((question, index) => {
             const userAnswer = userAnswers[index];
-            const isAnswered = userAnswer.selectedOptionIndex !== null;
+            const isAnswered = userAnswer?.selectedOptionIndex !== null && userAnswer !== undefined;
             const questionStatus = getQuestionStatus(index);
             
             let borderColor = 'border-slate-200 dark:border-slate-700';
@@ -304,7 +287,8 @@ export default function Quiz() {
                     </h3>
                     
                     <CustomRadioGroup
-                      value={userAnswer.selectedOptionIndex?.toString() || ''}
+                      name={`question-${question.id}`}
+                      value={userAnswer?.selectedOptionIndex?.toString() || ''}
                       onValueChange={(value) => handleAnswerChange(question.id, parseInt(value))}
                       disabled={showResults}
                     >
@@ -314,7 +298,7 @@ export default function Quiz() {
                           if (showResults) {
                             if (optionIndex === question.correctOptionIndex) {
                               optionStyle = 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700';
-                            } else if (optionIndex === userAnswer.selectedOptionIndex && optionIndex !== question.correctOptionIndex) {
+                            } else if (optionIndex === userAnswer?.selectedOptionIndex && optionIndex !== question.correctOptionIndex) {
                               optionStyle = 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700';
                             }
                           }
@@ -325,7 +309,7 @@ export default function Quiz() {
                                 value={optionIndex.toString()} 
                                 id={`q${question.id}-option${optionIndex}`}
                                 disabled={showResults}
-                                checked={userAnswer.selectedOptionIndex === optionIndex}
+                                checked={userAnswer?.selectedOptionIndex === optionIndex}
                               />
                               <CustomLabel
                                 htmlFor={`q${question.id}-option${optionIndex}`}
@@ -336,7 +320,7 @@ export default function Quiz() {
                               {showResults && optionIndex === question.correctOptionIndex && (
                                 <CheckCircle className="w-4 h-4 text-green-600" />
                               )}
-                              {showResults && optionIndex === userAnswer.selectedOptionIndex && optionIndex !== question.correctOptionIndex && (
+                              {showResults && optionIndex === userAnswer?.selectedOptionIndex && optionIndex !== question.correctOptionIndex && (
                                 <XCircle className="w-4 h-4 text-red-600" />
                               )}
                             </div>
@@ -461,7 +445,7 @@ export default function Quiz() {
 
               {/* All Correct Answers Section */}
               <CustomCollapsible open={showCorrectAnswers} onOpenChange={setShowCorrectAnswers}>
-                <CustomCollapsibleTrigger>
+                <CustomCollapsibleTrigger onClick={() => {}}>
                   <CustomCard className="cursor-pointer hover:shadow-md transition-shadow">
                     <CustomCardHeader>
                       <CustomCardTitle className="flex items-center justify-between">
@@ -488,12 +472,12 @@ export default function Quiz() {
                                     Correct Answer: {question.options[question.correctOptionIndex]}
                                   </span>
                                 </div>
-                                {userAnswers[index].selectedOptionIndex !== null && 
-                                 userAnswers[index].selectedOptionIndex !== question.correctOptionIndex && (
+                                {userAnswers[index]?.selectedOptionIndex !== null && 
+                                 userAnswers[index]?.selectedOptionIndex !== question.correctOptionIndex && (
                                   <div className="flex items-center space-x-2 mt-1">
                                     <XCircle className="w-4 h-4 text-red-600" />
                                     <span className="text-red-600">
-                                      Your Answer: {question.options[userAnswers[index].selectedOptionIndex!]}
+                                      Your Answer: {question.options[userAnswers[index]!.selectedOptionIndex!]}
                                     </span>
                                   </div>
                                 )}

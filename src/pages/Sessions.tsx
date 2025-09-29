@@ -57,10 +57,10 @@ export default function Sessions() {
       >
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
               Quiz Sessions
             </h1>
-            <p className="text-slate-600 dark:text-slate-300">
+            <p className="text-text-muted">
               Track your progress and review past quiz attempts
             </p>
           </div>
@@ -92,12 +92,12 @@ export default function Sessions() {
         </div>
 
         {sessions.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+          <div className="text-center py-12 bg-surface rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
             <Clock className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+            <h2 className="text-xl font-semibold text-text-primary mb-2">
               No Quiz Sessions Yet
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">
+            <p className="text-text-muted mb-6">
               Start taking quizzes to see your session history here
             </p>
             <CustomButton onClick={() => window.history.back()}>
@@ -105,7 +105,7 @@ export default function Sessions() {
             </CustomButton>
           </div>
         ) : (
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="bg-surface rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <CustomTable>
               <CustomTableHeader>
                 <CustomTableRow>
@@ -123,13 +123,13 @@ export default function Sessions() {
                   <CustomTableRow key={index}>
                     <CustomTableCell className="font-medium">
                       <div>
-                        <div className="text-slate-900 dark:text-white">{session.subject}</div>
+                        <div className="text-text-primary">{session.subject}</div>
                         {session.group && (
-                          <div className="text-sm text-slate-500">{session.group}</div>
+                          <div className="text-sm text-text-muted">{session.group}</div>
                         )}
                       </div>
                     </CustomTableCell>
-                    <CustomTableCell className="text-slate-600 dark:text-slate-400">
+                    <CustomTableCell className="text-text-muted">
                       {formatDate(session.timestamp)}
                     </CustomTableCell>
                     <CustomTableCell className="text-center">

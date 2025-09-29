@@ -8,7 +8,7 @@ const CustomCard = React.forwardRef<HTMLDivElement, CustomCardProps>(
     <div
       ref={ref}
       className={cn(
-        "rounded-xl bg-white dark:bg-slate-800 shadow-sm flex flex-col h-full",
+        "rounded-xl bg-surface shadow-sm flex flex-col h-full",
         className
       )}
       {...props}
@@ -36,7 +36,7 @@ const CustomCardTitle = React.forwardRef<HTMLHeadingElement, CustomCardTitleProp
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn("text-lg font-semibold text-slate-900 dark:text-white", className)}
+      className={cn("text-lg font-semibold text-text-primary", className)}
       {...props}
     />
   )
@@ -49,7 +49,7 @@ const CustomCardDescription = React.forwardRef<HTMLParagraphElement, CustomCardD
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn("text-sm text-slate-600 dark:text-slate-400", className)}
+      className={cn("text-sm text-text-muted", className)}
       {...props}
     />
   )

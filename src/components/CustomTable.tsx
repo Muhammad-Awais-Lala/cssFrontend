@@ -22,7 +22,7 @@ const CustomTableHeader = React.forwardRef<HTMLTableSectionElement, CustomTableH
   ({ className, ...props }, ref) => (
     <thead
       ref={ref}
-      className={cn("text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700 dark:text-slate-400 [&_tr]:border-b", className)}
+      className={cn("text-xs text-text-muted uppercase bg-slate-50 dark:bg-slate-800/50 [&_tr]:border-b", className)}
       {...props}
     />
   )
@@ -65,7 +65,7 @@ const CustomTableRow = React.forwardRef<HTMLTableRowElement, CustomTableRowProps
     <tr
       ref={ref}
       className={cn(
-        "border-b transition-colors hover:bg-slate-50 dark:hover:bg-slate-600 data-[state=selected]:bg-slate-100 dark:data-[state=selected]:bg-slate-800",
+        "border-b transition-colors hover:bg-accent data-[state=selected]:bg-accent",
         className
       )}
       {...props}

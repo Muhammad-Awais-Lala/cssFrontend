@@ -48,10 +48,10 @@ export default function Settings() {
         transition={{ duration: 0.6 }}
       >
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
             Settings
           </h1>
-          <p className="text-slate-600 dark:text-slate-300">
+          <p className="text-text-muted">
             Customize your CSS exam preparation experience
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function Settings() {
                   return (
                     <CustomButton
                       key={option.value}
-                      variant={theme === option.value ? "outline" : "default"}
+                      variant={theme === option.value ? "default" : "outline"}
                       className="h-20 flex flex-col items-center justify-center space-y-2"
                       onClick={() => setTheme(option.value as any)}
                     >
@@ -100,10 +100,10 @@ export default function Settings() {
               </CustomCardDescription>
             </CustomCardHeader>
             <CustomCardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-surface rounded-lg border border-slate-200 dark:border-slate-700">
                 <div>
-                  <h3 className="font-medium text-slate-900 dark:text-white">Clear Quiz History</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <h3 className="font-medium text-text-primary">Clear Quiz History</h3>
+                  <p className="text-sm text-text-muted">
                     Remove all saved quiz session data
                   </p>
                 </div>
@@ -190,11 +190,11 @@ export default function Settings() {
               </CustomCardDescription>
             </CustomCardHeader>
             <CustomCardContent>
-              <div className="space-y-4 text-sm text-slate-600 dark:text-slate-400">
+              <div className="space-y-4 text-sm text-text-muted">
                 <div className="flex items-start space-x-3">
                   <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-slate-900 dark:text-white mb-1">Local Data Storage</h4>
+                    <h4 className="font-medium text-text-primary mb-1">Local Data Storage</h4>
                     <p>All your quiz answers and session history are stored locally in your browser. No personal data is sent to external servers.</p>
                   </div>
                 </div>
@@ -202,7 +202,7 @@ export default function Settings() {
                 <div className="flex items-start space-x-3">
                   <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-slate-900 dark:text-white mb-1">Question Generation</h4>
+                    <h4 className="font-medium text-text-primary mb-1">Question Generation</h4>
                     <p>MCQs are generated using advanced language models. Only subject names and difficulty preferences are used for question generation.</p>
                   </div>
                 </div>
@@ -210,7 +210,7 @@ export default function Settings() {
                 <div className="flex items-start space-x-3">
                   <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-slate-900 dark:text-white mb-1">Pakistan-Centric Content</h4>
+                    <h4 className="font-medium text-text-primary mb-1">Pakistan-Centric Content</h4>
                     <p>All generated questions are specifically designed to be relevant to Pakistan's context, culture, and CSS exam requirements.</p>
                   </div>
                 </div>
@@ -231,10 +231,10 @@ export default function Settings() {
             </CustomCardHeader>
             <CustomCardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-surface rounded-lg border border-slate-200 dark:border-slate-700">
                   <div>
-                    <h3 className="font-medium text-slate-900 dark:text-white">Muhammad Ahmad</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">AI Engineer</p>
+                    <h3 className="font-medium text-text-primary">Muhammad Ahmad</h3>
+                    <p className="text-sm text-text-muted">AI Engineer</p>
                   </div>
                   <CustomButton
                     variant="outline" 
@@ -247,13 +247,13 @@ export default function Settings() {
                   </CustomButton>
                 </div>
                 
-                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-surface rounded-lg border border-slate-200 dark:border-slate-700">
                   <div>
-                    <h3 className="font-medium text-slate-900 dark:text-white">Application Version</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Current version of the CSS Prep application</p>
+                    <h3 className="font-medium text-text-primary">Application Version</h3>
+                    <p className="text-sm text-text-muted">Current version of the CSS Prep application</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-lg font-semibold text-slate-900 dark:text-white">v1.0</span>
+                    <span className="text-lg font-semibold text-text-primary">v1.0</span>
                   </div>
                 </div>
               </div>

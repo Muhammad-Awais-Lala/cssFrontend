@@ -17,13 +17,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    
-    // Remove any existing theme classes
-    root.classList.remove('light', 'dark');
-    // Add the current theme class
-    root.classList.add(theme);
-    
-    // Save to localStorage
+    // Ensure only the 'dark' class is used for Tailwind dark mode
+    root.classList.toggle('dark', theme === 'dark');
+    // Optionally expose current theme for CSS if needed
+    root.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
 

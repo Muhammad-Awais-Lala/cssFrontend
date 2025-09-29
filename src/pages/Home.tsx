@@ -111,7 +111,7 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-8"
         >
-          <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-bold text-text-primary mb-6 leading-tight">
             Master the{' '}
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               CSS Exam
@@ -124,7 +124,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto mb-10 leading-relaxed"
+          className="text-xl md:text-2xl text-text-muted max-w-4xl mx-auto mb-10 leading-relaxed"
         >
           Your comprehensive platform for Pakistan's Central Superior Services exam preparation. 
           Practice with Pakistan-centric MCQs covering all compulsory and optional subjects.

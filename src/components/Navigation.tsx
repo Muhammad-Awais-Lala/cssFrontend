@@ -30,7 +30,8 @@ const CustomDropdownMenu = ({ children, trigger, onClose }: { children: React.Re
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-20"
+            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-surface ring-1 ring-black/10 dark:ring-white/10 focus:outline-none z-20"
+            style={{ backgroundColor: 'var(--color-surface)' }}
           >
             {children}
           </motion.div>
@@ -42,7 +43,7 @@ const CustomDropdownMenu = ({ children, trigger, onClose }: { children: React.Re
 
 const navItems = [
   { path: '/home', label: 'Home', icon: Home },
-  { path: '/compulsory', label: 'Compulsory', icon: BookOpen },
+  { path: '/compulsory', label: 'Compulsory Subjects', icon: BookOpen },
   { path: '/optional', label: 'Optional Subjects', icon: Layers },
   { path: '/sessions', label: 'Sessions', icon: Clock },
   { path: '/settings', label: 'Settings', icon: Settings },
@@ -61,7 +62,7 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -97,8 +98,8 @@ export default function Navigation() {
                       size="sm"
                       className={`flex items-center space-x-2 ${
                         isActive 
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                          ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-600)] text-white' 
+                          : 'text-text-primary hover:bg-accent'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -118,6 +119,7 @@ export default function Navigation() {
                   <ThemeIcon className="w-4 h-4" />
                 </CustomButton>
               }
+              onClose={() => {}}
             >
               <div className="py-1">
                 {themeOptions.map((option) => {
@@ -127,8 +129,10 @@ export default function Navigation() {
                       key={option.value}
                       variant={theme === option.value ? "default" : "ghost"}
                       className="w-full justify-start text-sm px-4 py-2"
-                      onClick={() => {
+                      onClick={(e) => {
                         setTheme(option.value as any);
+                        // Auto-close the dropdown by dispatching a click on backdrop
+                        (e.currentTarget.closest('.relative')?.querySelector('.fixed.inset-0') as HTMLElement)?.click?.();
                       }}
                     >
                       <Icon className="w-4 h-4 mr-2" />
@@ -143,7 +147,12 @@ export default function Navigation() {
             <div className="md:hidden">
               <CustomSheet open={isOpen} onOpenChange={setIsOpen} side="right">
                 <CustomSheetTrigger onClick={() => setIsOpen(true)}>
-                  <CustomButton variant="ghost" size="sm" className="w-9 h-9 p-0">
+                  <CustomButton 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-9 h-9 p-0 text-slate-700 dark:text-slate-200" 
+                    aria-label="Open navigation menu"
+                  >
                     <Menu className="w-5 h-5" />
                   </CustomButton>
                 </CustomSheetTrigger>

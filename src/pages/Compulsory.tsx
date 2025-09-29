@@ -111,13 +111,14 @@ export default function Compulsory() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {compulsorySubjects.map((subject, index) => (
             <motion.div
               key={subject.slug}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
+              className="h-full"
             >
               <SubjectCard
                 title={subject.name}
@@ -125,6 +126,7 @@ export default function Compulsory() {
                 icon={subject.icon}
                 gradient={subject.gradient}
                 onClick={() => handleSubjectClick(subject)}
+                className="h-full"
               />
             </motion.div>
           ))}

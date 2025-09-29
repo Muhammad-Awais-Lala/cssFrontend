@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Apply theme variables to body so Tailwind tokens resolve visually */
+html, body, #root {
+  background-color: var(--color-bg);
+  color: var(--text-primary);
+}
+
 /* Define CSS variables for theme colors */
 :root {
   --color-bg: #ffffff; /* Light mode background */

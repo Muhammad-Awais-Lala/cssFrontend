@@ -5,10 +5,11 @@ interface CustomRadioGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string;
   onValueChange: (value: string) => void;
   disabled?: boolean;
+  name?: string;
 }
 
 const CustomRadioGroup = React.forwardRef<HTMLDivElement, CustomRadioGroupProps>(
-  ({ value, onValueChange, disabled, children, className, ...props }, ref) => {
+  ({ value, onValueChange, disabled, children, className, name, ...props }, ref) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!disabled) {
         onValueChange(e.target.value);
@@ -22,7 +23,11 @@ const CustomRadioGroup = React.forwardRef<HTMLDivElement, CustomRadioGroupProps>
         onChange={handleChange}
         {...props}
       >
-        {children}
+        {React.Children.map(children, (child) => {
+          if (!React.isValidElement(child)) return child;
+          // inject group name into radio items
+          return React.cloneElement(child as any, { name });
+        })}
       </div>
     );
   }
@@ -33,15 +38,16 @@ interface CustomRadioGroupItemProps extends React.InputHTMLAttributes<HTMLInputE
   value: string;
   id: string;
   checked: boolean;
+  name?: string;
 }
 
 const CustomRadioGroupItem = React.forwardRef<HTMLInputElement, CustomRadioGroupItemProps>(
-  ({ value, id, disabled, checked, className, ...props }, ref) => (
+  ({ value, id, disabled, checked, name, className, ...props }, ref) => (
     <input
       ref={ref}
       type="radio"
       id={id}
-      name="radio-group" // All items in a group should have the same name
+      name={name}
       value={value}
       disabled={disabled}
       checked={checked}
